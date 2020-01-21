@@ -1,0 +1,30 @@
+{% extends 'explore/layout.html' %}
+
+{% block content %}
+
+  {% load static %}
+
+  <!-- Masthead -->
+  <header class="master">
+    <div class="container text-center">
+      <h1 class="text-uppercase text-white font-weight-bold">{{ user.first_name }}</h1>
+    </div>
+  </header>
+
+  <!-- Profile Section -->
+  <section class="page-section">
+    <div class="container">
+      <div class="row">
+        <div class="col-lg-9 col-md-9">
+          <h2>Informations de profil</h2>
+          <br>
+            <ul>
+              <li>Nom d'utilisateur : {{ user.first_name }}</li>
+              <li>Email : {{ user.email }}</li>
+            </ul>
+              <p>Inscrit(e) depuis le {{ user.date_joined }}</p>
+          </div>
+        </div>
+      </div>
+  </section>
+{% endblock %}

@@ -1,0 +1,60 @@
+{% extends 'explore/layout.html' %}
+
+{% block content %}
+
+  {% load static %}
+
+  <!-- Masthead -->
+  <header class="master">
+    <div class="container text-center">
+      <h1 class="text-uppercase text-white font-weight-bold">Votre espace</h1>
+    </div>
+  </header>
+
+  <!-- SignUp Section -->
+  <section class="page-section">
+    <div class="container">
+      <p class="m-0"><a href="#signup">Inscription</a> | <a href="#signin">Connexion</a></p>
+      <br>
+      <div class="row">
+        <div class="col-lg-5 col-md-5" id="signin">
+          <div class="jumbotron">
+            <h2>Accédez à votre espace</h2>
+            <br>
+              <form method="post" action="{% url 'user_login' %}">
+                {% csrf_token %}
+                <div>
+                <label id="username">Email</label>
+                  <br>
+                <input type="text" name="username" autofocus="true">
+                </div>
+                <div class="mt-1">
+                <label id="password">Mot de passe</label>
+                  <br>
+                <input type="password" name="password">
+                </div>
+                  <br>
+                <button class="mt-1 btn btn-primary btn-sm" type="submit">Je me connecte</button>
+              </form>
+          </div>
+        </div>
+        <div class="col-lg-1 col-md-1">
+        </div>
+        <div class="col-lg-6 col-md-6" id="signup">
+          <h2>Créez votre espace</h2>
+          <br>
+            <form method="post">
+              {% csrf_token %}
+              {% for field in form %}
+              <div>
+                {{ field.label_tag }}<br>
+                {{ field }}<br><br>
+              </div>
+              {% endfor %}
+              <button type="submit" class="mb-1 btn btn-primary btn-sm">Je m'inscris</button>
+            </form>
+        </div>
+      </div>
+    </div>
+  </section>
+{% endblock %}

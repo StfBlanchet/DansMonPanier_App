@@ -1,0 +1,191 @@
+{% extends 'explore/layout.html' %}
+
+{% block content %}
+
+  {% load static %}
+
+  <!-- Masthead -->
+  <header class="food_item">
+    <div class="container text-center">
+      {% for item in features %}
+    <h1 class="h2 mt-0 pt-0 text-uppercase text-white font-weight-bold">{{ item.name }}</h1>
+          {% if item.brands %}
+          <p class="text-white mt-0 mb-5">Marque : {{ item.brands }}</p>
+          {% else %}
+          <p class="text-white mt-0 mb-5">Marque : non précisée</p>
+          {% endif %}
+      {% if user.is_authenticated %}
+          {% if not item.id in registered %}
+            <form action="{% url 'save_favorites' %}" method="post">
+            {% csrf_token %}
+            <button name="p" value="{{ item.id }}" type="submit" class="green btn btn-primary">
+              <i class="far fa-save"></i>Ajouter à mes favoris</button>
+            </form>
+          {% else %}
+            <p class="green btn btn-primary"><i class="fas fa-bookmark"></i>favoris</p>
+          {% endif %}
+          {% else %}
+            <form action="{% url 'save_favorites' %}" method="post">
+            {% csrf_token %}
+            <button name="p" value="{{ item.id }}" type="submit" class="green btn btn-primary">
+              <i class="far fa-save"></i>Ajouter à mes favoris</button>
+            </form>
+        {% endif %}
+      </div>
+  </header>
+
+  <!-- Item Section -->
+  <section class="page-section">
+    <div class="container">
+      <div class="row">
+        <div class="col-lg-4 col-md-4">
+          <div>
+            {% if item.nutrition_grade == 'a' %}
+            <img class="img-score" src="{% static 'explore/off_icons/nutriscore-a.svg' %}" alt="Score nutritionnel {{ item.nutrition_grade }}">
+            {% elif item.nutrition_grade == 'b' %}
+            <img class="img-score" src="{% static 'explore/off_icons/nutriscore-b.svg' %}" alt="Score nutritionnel {{ item.nutrition_grade }}">
+            {% elif item.nutrition_grade == 'c' %}
+            <img class="img-score" src="{% static 'explore/off_icons/nutriscore-c.svg' %}" alt="Score nutritionnel {{ item.nutrition_grade }}">
+            {% elif item.nutrition_grade == 'd' %}
+            <img class="img-score" src="{% static 'explore/off_icons/nutriscore-d.svg' %}" alt="Score nutritionnel {{ item.nutrition_grade }}">
+            {% elif item.nutrition_grade == 'e' %}
+            <img class="img-score" src="{% static 'explore/off_icons/nutriscore-e.svg' %}" alt="Score nutritionnel {{ item.nutrition_grade }}">
+            {% endif %}
+            {% if item.nova == 1 %}
+            <img class="img-nova" src="{% static 'explore/off_icons/nova-group-1.svg' %}" alt="Groupe Nova {{ item.nova }}">
+            {% elif item.nova == 2 %}
+            <img class="img-nova" src="{% static 'explore/off_icons/nova-group-2.svg' %}" alt="Groupe Nova {{ item.nova }}">
+            {% elif item.nova == 3 %}
+            <img class="img-nova" src="{% static 'explore/off_icons/nova-group-3.svg' %}" alt="Groupe Nova {{ item.nova }}">
+            {% elif item.nova == 4 %}
+            <img class="img-nova" src="{% static 'explore/off_icons/nova-group-4.svg' %}" alt="Groupe Nova {{ item.nova }}">
+            {% endif %}
+          </div>
+          <div class="mt-1 my-1">
+            {% if item.image_url %}
+            <img class="img-fluid img-thumbnail w-100" src="{{ item.image_url }}" alt="{{ item.name }}"></div>
+            {% else %}
+            <img class="img-fluid img-thumbnail w-75" src="{% static 'explore/img/empty_cart.jpg' %}" alt="{{ item.name }}"></div>
+            {% endif %}
+            {% if item.quantity %}
+            <p>{{ item.quantity }}</p>
+            {% endif %}
+          </div>
+        <div class="col-lg-4 col-md-4">
+          <div>
+          {% if item.energy or item.fat or item.saturated_fat or item.sugars or item.salt %}
+          <h3 class="mt-0 h5 text-uppercase mid_purple">Repères nutritionnels pour 100 g.</h3>
+          <ul class="py-3 ml-1">
+            {% if item.energy %}
+            <li>Energie en {{ item.energy_unit }} : {{ item.energy }}</li>
+            {% endif %}
+            {% if item.fat %}
+            <li>Matières grasses : {{ item.fat }}</li>
+            {% endif %}
+            {% if item.saturated_fat %}
+            <li>Acides gras saturés : {{ item.saturated_fat }}</li>
+            {% endif %}
+            {% if item.sugars %}
+            <li>Sucres : {{ item.sugars }}</li>
+            {% endif %}
+            {% if item.salt %}
+            <li>Sel : {{ item.salt }}</li>
+            {% endif %}
+            {% if item.fiber %}
+            <li>Fibres : {{ item.fiber }}</li>
+            {% endif %}
+            {% if item.proteins %}
+            <li>Protéines : {{ item.proteins }}</li>
+            {% endif %}
+          {% endif %}
+          </ul>
+          {% if item.bio == 'True' or item.palm_oil_free == 'True' or item.fair_trade == 'True' or item.utz == 'True' or item.fsc == 'True' or item.iplc == 'True' %}
+          <h3 class="h5 text-uppercase mid_purple">Ethique</h3>
+          <ul class="py-3 ml-1">
+            {% if item.bio == 'True' %}
+            <li>Agriculture biologique</li>
+            {% endif %}
+            {% if item.palm_oil_free == 'True' %}
+            <li>Sans huile de palme</li>
+            {% endif %}
+            {% if item.fair_trade == 'True' %}
+            <li>Commerce équitable</li>
+            {% endif %}
+            {% if item.utz == 'True' %}
+            <li>Label UTZ</li>
+            {% endif %}
+            {% if item.fsc == 'True' %}
+            <li>Label FSC</li>
+            {% endif %}
+            {% if item.iplc == 'True' %}
+            <li>Label IPLC</li>
+            {% endif %}
+          {% endif %}
+          </ul>
+          {% if item.made_in_france == 'True' or item.french_ingredients == 'True' %}
+          <h3 class="h5 text-uppercase mid_purple">Origine</h3>
+          <ul class="py-3 ml-1">
+            {% if item.made_in_france == 'True' %}
+            <li>Fabriqué en France</li>
+            {% endif %}
+            {% if item.french_ingredients == 'True' %}
+            <li>Ingrédients d'origine française</li>
+            {% endif %}
+          {% endif %}
+          </ul>
+          </div>
+        </div>
+        <div class="col-lg-4 col-md-4">
+          <div class="pl-2">
+            <h3 class="mt-0 h5 text-uppercase mid_purple">Informations complémentaires</h3>
+          <ul class="py-3 ml-1">
+            {% if item.additives %}
+            <li>Additif(s) : {{ item.additives }}</li>
+            {% endif %}
+            {% if item.gluten_free == 'True' %}
+            <li>Sans gluten</li>
+            {% endif %}
+            {% if item.allergens_from_ingredients %}
+            <li>Allergènes possibles : {{ item.allergens_from_ingredients }}</li>
+            {% endif %}
+            {% if item.vegetarian == 'True' %}
+            <li>Végétarien</li>
+            {% elif item.vegan == 'True' %}
+            <li>Vegan</li>
+            {% endif %}
+            </ul>
+          <h3 class="h5 text-uppercase mid_purple">Conditionnement</h3>
+          <ul class="py-3 ml-1">
+            {% if item.packaging %}
+            <li>{{ item.packaging }}</li>
+            {% endif %}
+            {% if item.eco_packaging == 'True' %}
+            <li>Point Vert</li>
+            {% endif %}
+          </ul>
+          {% if item.stores %}
+          <h3 class="h5 text-uppercase mid_purple">Distributeurs</h3>
+          <ul class="py-3 ml-1">
+            <li>{{ item.stores }}</li>
+            {% endif %}
+          </ul>
+          </div>
+        </div>
+      <div class="container">
+        <hr>
+      <div class="row">
+        <div class="col-lg-10 col-md-10">
+        {% if item.ingredients_text %}
+        <h3 class="h5 text-uppercase mid_purple">Composition</h3>
+        <p>{{ item.ingredients_text }}</p>
+        {% endif %}
+        {% if item.code %}
+          <p>Code barre : {{ item.code }}</p>
+        {% endif %}
+        </div>
+      </div>
+      </div>
+        {% endfor %}
+    </div>
+  </section>
+{% endblock %}

@@ -1,0 +1,123 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1, shrink-to-fit=no">
+  <meta name="description" content="DansMonPanier!">
+  <meta name="author" content="">
+
+  <title>DansMonPanier!</title>
+
+    {% load static %}
+
+  <!-- Favicon -->
+  <link rel="shortcut icon" href="{% static 'explore/img/dansmonpanier_favicon.png' %}">
+
+  <!-- Google Fonts -->
+  <link href="https://fonts.googleapis.com/css?family=Shadows+Into+Light&display=swap" rel="stylesheet">
+  <link href="https://fonts.googleapis.com/css?family=Quicksand:400&display=swap" rel="stylesheet">
+
+  <!-- Font Awesome Icons -->
+  <link href="{% static 'explore/vendor/fontawesome-free/css/all.min.css' %}" rel="stylesheet" type="text/css">
+
+  <!-- Theme CSS - Includes Bootstrap -->
+  <link href="{% static 'explore/css/creative.css' %}" rel="stylesheet">
+
+</head>
+
+<body id="page-top">
+
+  <!-- Navigation -->
+  <nav class="navbar navbar-expand-lg navbar-light fixed-top py-3" id="mainNav">
+    <div class="navbar-brand">
+      <a href="{% url 'index' %}">
+        <img class="img-fluid" src="{% static 'explore/img/dansmonpanier_logo.png' %}" alt="DansMonPanier"></a>
+      <a class="brand h1" style="margin-left: -0.8rem" href="{% url 'index' %}">Dans-mon-panier</a>
+      </div>
+        <button class="navbar-toggler navbar-toggler-right" type="button" data-toggle="collapse" data-target="#navbarResponsive" aria-controls="navbarResponsive" aria-expanded="false" aria-label="Toggle navigation">
+        <span class="navbar-toggler-icon"></span>
+        </button>
+      <div class="collapse navbar-collapse" id="navbarResponsive">
+        <ul class="navbar-nav ml-auto mt-0 my-lg-0 w-100">
+          <li class="nav-item mt-2 w-75">
+        <form class="navbar-form" action="{% url 'results' %}" method="get" accept-charset="utf-8" role="search">
+          <input class="form-control" name="q" type="text" placeholder="Chercher">
+           <div class="dropdown dropleft d-inline">
+            <button type="button" class="btn btn-primary dropdown-toggle" data-toggle="dropdown">
+            </button>
+                <div class="dropdown-menu pl-3 pb-2">
+                  <h5 class="text-white my-2">Classement par :</h5>
+                  <label class="d-block"><input type="radio" name="ranking" value="nutrition" checked>&nbsp;&nbsp;score nutritionnel</label>
+                  <label class="d-block"><input type="radio" name="ranking" value="nova">&nbsp;&nbsp;groupe NOVA</label>
+                  <h5 class="text-white mt-3 mb-2">Filtres :</h5>
+                  <label class="d-block"><input type="radio" name="filtering" value="none" checked>&nbsp;&nbsp;aucun</label>
+                  <label class="d-block"><input type="radio" name="filtering" value="bio">&nbsp;&nbsp;agriculture biologique</label>
+                  <label class="d-block"><input type="radio" name="filtering" value="fsc">&nbsp;&nbsp;écolabel (FSC)</label>
+                  <label class="d-block"><input type="radio" name="filtering" value="palm-oil-free">&nbsp;&nbsp;sans huile de palme</label>
+                  <label class="d-block"><input type="radio" name="filtering" value="fair-trade">&nbsp;&nbsp;commerce équitable</label>
+                  <label class="d-block"><input type="radio" name="filtering" value="made-in-france">&nbsp;&nbsp;origine France</label>
+                </div>
+              </div>
+        </form>
+          </li>
+          <li class="nav-item mt-2">
+           {% if user.is_authenticated %}
+            <a title="Mon profil" href="{% url 'my_profile' %}" class="mid_purple"><i class="far fa-user mb-3"></i></a>
+          </li>
+          <li class="nav-item mt-1">
+            <a title="Mes favoris" href="{% url 'my_favorites' %}" class="mid_purple"><i class="far fa-bookmark mb-3"></i></a>
+          </li>
+          <li class="nav-item mt-1 pb-0">
+            <a title="Déconnexion" href="{% url 'user_logout' %}" class="mid_purple"><i class="fas fa-sign-out-alt mb-3"></i></a>
+          </li>
+          {% else %}
+          <li class="nav-item mt-2">
+            <a title="Connexion / Inscription" href="{% url 'signin' %}" class="mid_purple"><i class="far fa-user mb-3"></i></a>
+          </li>
+          {% endif %}
+        </ul>
+      </div>
+      <!-- Messages Section -->
+      {% if messages %}
+            {% for message in messages %}
+              <div class="fixed-bottom alert alert-info alert-dismissible m-auto fade show" role="alert">
+                {{ message }}
+                <button type="button" class="close" data-dismiss="alert" aria-label="Close">
+                  <span aria-hidden="true">&times;</span>
+                </button>
+              </div>
+            {% endfor %}
+      {% endif %}
+  </nav>
+
+  {% block content %} {% endblock %}
+
+  <!-- Footer -->
+  <footer class="page-footer py-3">
+    <div class="container">
+      <div class="row">
+        <div class="col-lg-6 col-md-6 text-center">
+          <div class="small text-center"><a href="{% url 'legal' %}">Mentions légales</a></div>
+        </div>
+        <div class="col-lg-6 col-md-6 text-center">
+          <div class="text-center"><a href="https://github.com/StfBlanchet/"><span class="small">&copy; Stéphanie Blanchet, 2020.</span> <i class="fab fa-github"></i></a></div>
+        </div>
+      </div>
+    </div>
+  </footer>
+
+  <!-- Bootstrap core JavaScript -->
+  <script src="{% static 'explore/vendor/jquery/jquery.min.js' %}"></script>
+  <script src="{% static 'explore/vendor/bootstrap/js/bootstrap.bundle.min.js' %}"></script>
+
+  <!-- Plugin JavaScript -->
+  <script src="{% static 'explore/vendor/jquery-easing/jquery.easing.min.js' %}"></script>
+
+  <!-- Custom scripts for this template -->
+  <script src="{% static 'explore/js/creative.min.js' %}"></script>
+
+</body>
+
+</html>

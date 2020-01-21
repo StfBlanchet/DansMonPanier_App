@@ -1,0 +1,125 @@
+{% extends 'explore/layout.html' %}
+
+{% block content %}
+
+  {% load static %}
+
+  <!-- Masthead -->
+  <header class="master">
+    <div class="container text-center">
+    <h1 class="text-uppercase text-white font-weight-bold">Faites le bon choix !</h1>
+      </div>
+  </header>
+
+  <!-- Results Section -->
+  <section class="page-section">
+    <div class="container justify-content-center">
+      <ul class="list-unstyled row">
+       {% for food in results %}
+          <li class="list-inline-item my-0 p-3 col-md-6 col-lg-4">
+             <a href="{% url 'item' food.id %}">
+              {% if food.image_url %}
+              <img class="card-img-top" src="{{ food.image_url }}" alt="{{ food.name }}">
+              {% else %}
+              <img class="card-img-top" src="{% static 'explore/img/empty_cart.jpg' %}" alt="{{ food.name }}">
+              {% endif %}
+             </a>
+            <div class="card-body">
+              <h3 class="card-title h4 mid_purple"><a href="{% url 'item' food.id %}">{{ food.name }}</a></h3>
+              {% if food.brands %}
+                <p class="card-text">Marque : {{ food.brands }}</p>
+              {% else %}
+                <p class="card-text">Marque : non précisée</p>
+              {% endif %}
+              <br>
+              <ul class="list-group list-group-flush">
+                <li style="border:none" class="py-0 list-group-item">
+                {% if food.nutrition_grade %}
+                  {% if food.nutrition_grade == 'a' %}
+                  <img class="img-score" src="{% static 'explore/off_icons/nutriscore-a.svg' %}" alt="Score nutritionnel {{ food.nutrition_grade }}">
+                  {% elif food.nutrition_grade == 'b' %}
+                  <img class="img-score" src="{% static 'explore/off_icons/nutriscore-b.svg' %}" alt="Score nutritionnel {{ food.nutrition_grade }}">
+                  {% elif food.nutrition_grade == 'c' %}
+                  <img class="img-score" src="{% static 'explore/off_icons/nutriscore-c.svg' %}" alt="Score nutritionnel {{ food.nutrition_grade }}">
+                  {% elif food.nutrition_grade == 'd' %}
+                  <img class="img-score" src="{% static 'explore/off_icons/nutriscore-d.svg' %}" alt="Score nutritionnel {{ food.nutrition_grade }}">
+                  {% elif food.nutrition_grade == 'e' %}
+                  <img class="img-score" src="{% static 'explore/off_icons/nutriscore-e.svg' %}" alt="Score nutritionnel {{ food.nutrition_grade }}">
+                  {% endif %}
+                {% endif %}
+                {% if food.nova %}
+                  {% if food.nova == 1 %}
+                  <img class="img-nova" src="{% static 'explore/off_icons/nova-group-1.svg' %}" alt="Groupe Nova {{ food.nova }}">
+                  <p class="text-small font-italic"> 1 : Aliments pas ou peu transformés</p>
+                  {% elif food.nova == 2 %}
+                  <img class="img-nova" src="{% static 'explore/off_icons/nova-group-2.svg' %}" alt="Groupe Nova {{ food.nova }}">
+                  <p class="text-x-small font-italic"> 2 : Ingrédients culinaires transformés</p>
+                  {% elif food.nova == 3 %}
+                  <img class="img-nova" src="{% static 'explore/off_icons/nova-group-3.svg' %}" alt="Groupe Nova {{ food.nova }}">
+                  <p class="text-x-small font-italic"> 3 : Aliments transformés</p>
+                  {% elif food.nova == 4 %}
+                  <img class="img-nova" src="{% static 'explore/off_icons/nova-group-4.svg' %}" alt="Groupe Nova {{ food.nova }}">
+                  <p class="text-x-small font-italic"> 4 : Produit et aliments ultra-transformés</p>
+                  {% endif %}
+                {% endif %}
+                </li>
+                {% if food.additives %}
+                <li class="list-group-item">Additif(s) : {{ food.additives }}</li>
+                {% endif %}
+                {% if food.allergens_from_ingredients %}
+                <li class="list-group-item">Allergènes possibles : {{ food.allergens_from_ingredients }}</li>
+                {% endif %}
+                {% if food.gluten_free == 'True' %}
+                <li class="list-group-item">Sans gluten</li>
+                {% endif %}
+                {% if food.bio == 'True' %}
+                <li class="list-group-item">Agriculture biologique</li>
+                {% endif %}
+                {% if food.fsc == 'True' %}
+                <li class="list-group-item">Label FSC</li>
+                {% endif %}
+                {% if food.palm_oil_free == 'True' %}
+                <li class="list-group-item">Sans huile de palme</li>
+                {% endif %}
+                {% if food.vegetarian == 'True' %}
+                <li class="list-group-item">Végétarien</li>
+                {% elif food.vegan == 'True' %}
+                <li class="list-group-item">Vegan</li>
+                {% endif %}
+                {% if food.made_in_france == 'True' %}
+                <li class="list-group-item">Fabriqué en France</li>
+                {% endif %}
+                {% if food.french_ingredients == 'True' %}
+                <li class="list-group-item">Ingrédients d'origine française</li>
+                {% endif %}
+                {% if food.fair_trade == 'True' %}
+                <li class="list-group-item">Commerce équitable</li>
+                {% endif %}
+                <li class="list-group-item p-0 m-0 text-center">
+                  <br>
+                {% if user.is_authenticated %}
+                  {% if not food.id in registered %}
+                    <form action="{% url 'save_favorites' %}" method="post">
+                    {% csrf_token %}
+                      <button name="p" value="{{ food.id }}" type="submit" class="btn btn-primary green">
+                      <i class="far fa-save"></i>Sauvegarder</button>
+                    </form>
+                  {% else %}
+                    <p class="btn btn-primary"><i class="fas fa-bookmark"></i>favoris</p>
+                    {% endif %}
+                  {% else %}
+                    <form action="{% url 'save_favorites' %}" method="post">
+                    {% csrf_token %}
+                      <button name="p" value="{{ food.id }}" type="submit" class="btn btn-primary green">
+                      <i class="far fa-save"></i>Sauvegarder</button>
+                    </form>
+                  {% endif %}
+                </li>
+              </ul>
+            </div>
+          </li>
+        {% endfor %}
+        </ul>
+      </div>
+  </section>
+{% endblock %}
