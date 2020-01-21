@@ -71,8 +71,8 @@ WSGI_APPLICATION = 'therightfood.wsgi.application'
 DATABASES = {
     'default': {
         'ENGINE': 'django.db.backends.postgresql',
-        'NAME': 'foodfacts',
-        'USER': 'stfbla',
+        'NAME': '',
+        'USER': '',
         'PASSWORD': '',
         'HOST': '',
         'PORT': '5432',
