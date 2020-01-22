@@ -1,6 +1,6 @@
 """
 Django settings
-for therightfood project dev env
+for therightfood project
 """
 
 import os
@@ -9,15 +9,18 @@ import os
 # Build paths inside the project like this: os.path.join(BASE_DIR, ...)
 BASE_DIR = os.path.dirname(os.path.dirname(os.path.abspath(__file__)))
 
-SECRET_KEY = "!wa*gya13(a2#tip%cd8v_vb^_(a51f$+mpby4o&9g3y11n_6(')"
+SECRET_KEY = os.environ.get('SECRET_KEY', '!wa*gya13(a2#tip%cd8v_vb^_(a51f$+mpby4o&9g3y11n_6(')')
 
-ALLOWED_HOSTS = []
-
-DEBUG = True
+# SECURITY WARNING: don't run with debug turned on in production!
+if os.environ.get('ENV') == 'PRODUCTION':
+    DEBUG = False
+else:
+    DEBUG = True
 
 # Django debug toolbar
 INTERNAL_IPS = ['127.0.0.1']
 
+ALLOWED_HOSTS = []
 
 # Application definition
 
@@ -42,7 +45,8 @@ MIDDLEWARE = [
     'django.contrib.messages.middleware.MessageMiddleware',
     'django.middleware.clickjacking.XFrameOptionsMiddleware',
     'django.middleware.locale.LocaleMiddleware',
-    'debug_toolbar.middleware.DebugToolbarMiddleware'
+    'debug_toolbar.middleware.DebugToolbarMiddleware',
+    'whitenoise.middleware.WhiteNoiseMiddleware',
 ]
 
 ROOT_URLCONF = 'therightfood.urls'
@@ -71,8 +75,8 @@ WSGI_APPLICATION = 'therightfood.wsgi.application'
 DATABASES = {
     'default': {
         'ENGINE': 'django.db.backends.postgresql',
-        'NAME': '',
-        'USER': '',
+        'NAME': 'foodfacts',
+        'USER': 'stfbla',
         'PASSWORD': '',
         'HOST': '',
         'PORT': '5432',
@@ -100,14 +104,24 @@ AUTH_PASSWORD_VALIDATORS = [
 # Internationalization
 
 LANGUAGE_CODE = 'fr'
+
 TIME_ZONE = 'Europe/Paris'
+
 USE_I18N = True
+
 USE_L10N = True
+
 USE_TZ = True
 
 
 # Static files (CSS, JavaScript, Images)
 
 STATIC_URL = '/static/'
-STATIC_ROOT = os.path.join(BASE_DIR, 'staticfiles')
 
+if os.environ.get('ENV') == 'PRODUCTION':
+
+    STATIC_ROOT = os.path.join(BASE_ROOT, 'staticfiles')
+
+    # Simplified static file serving.
+    # https://warehouse.python.org/project/whitenoise/
+    STATICFILES_STORAGE = 'whitenoise.storage.CompressedManifestStaticFilesStorage'
