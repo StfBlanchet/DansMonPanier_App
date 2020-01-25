@@ -1,7 +1,8 @@
 # Production
+.env
 therightfood/settings/production.py
 __pycache__
-therightfood/staticfiles
+therightfood/static
 
 # Mac/OSX
 .DS_Store
