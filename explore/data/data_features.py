@@ -83,8 +83,11 @@ vars = [
 
 # Manage category import
 off_cat = os.path.abspath('off_cat.csv')
+off_cat_pg = os.path.abspath('off_cat_pg.csv')
+cat_to_load = os.path.abspath('cat_to_load.txt')
 
 # Manage food facts import
+
 fields = """
     category_group,
     created,
@@ -121,3 +124,12 @@ fields = """
     fiber,
     proteins
 """
+
+cat_list = ["aliments d'origine végétale",
+            "snacks",
+            "boissons",
+            "produits laitiers",
+            "viandes",
+            "produits à tartiner",
+            "epicerie",
+            "produits de la mer"]
