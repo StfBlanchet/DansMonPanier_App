@@ -5,26 +5,13 @@
 dansMonPanier Data Builder
 """
 
-"""
-TO BE FIXED
-
-Traceback (most recent call last):
-File "/Users/dev/Documents/dansMonPanier_staging/explore/data/food_builder.py", line 180, in <module>
-File "/Users/dev/Documents/dansMonPanier_staging/explore/data/food_builder.py", line 34, in __init__
-self.items = self.df.loc[self.df['category'] == self.cat, ['items']].values[0][0]
-IndexError: index 0 is out of bounds for axis 0 with size 0
-"""
-
 import pandas as pd
 from unidecode import unidecode
 import re
 from math import *
 import requests
 import datetime
-# if from Django app
-# from .data_features import *
-# else:
-from data_features import *
+from .data_features import *
 
 """
 This class allows to automate 
@@ -35,13 +22,12 @@ data cleaning and collection.
 class FoodBuilder:
 
     def __init__(self, target):
-        # if from Django app
-        # self.df = pd.read_csv(os.path.abspath('explore/data/off_cat.csv'))
-        # else:
         self.df = pd.read_csv(off_cat)
         self.cat = target
         # get the number of items in the target category
-        self.items = self.df.loc[self.df['category'] == self.cat, ['items']].values[0][0]
+        self.row = self.df[self.df.category == self.cat].reset_index(drop=True)
+        self.items = self.row.iat[0, 1]
+        print(self.cat, ": ", self.items, "items")
         self.pages = []
 
     def launch_request(self):
@@ -124,9 +110,6 @@ class FoodBuilder:
         self.res.drop(self.res[self.res.completeness == ''].index, inplace=True)
         self.res.drop(self.res[self.res.completeness < 0.9].index, inplace=True)
 
-        # Drop duplicates
-        self.res.drop_duplicates(subset=self.res.code, keep='first', inplace=True)
-
         # Remove undesired tags from cols containing text
         cleaner_0 = re.compile(r'[\t\n\r"_*]')
         cleaner_1 = r'fr:|en:|es:|it:|de:'
@@ -184,19 +167,5 @@ class FoodBuilder:
         self.res = self.res.join(text_enriched)
         self.res = self.res.drop(text_cols_dup, axis=1)
         self.res = self.res.join(text_cleaned)
-        self.uris_cat = self.uris_cat.replace("'", "-")
-        self.res.to_csv(self.uris_cat + '_dataset.csv', index=False, sep=';', header=True, columns=vars)
-
-
-
-"""
-Load categories that were queried
-but not available in the database.
-"""
-
-with open('cat_to_load.txt') as f:
-    for item in f:
-        cat_set = item.split(',')
-        for elt in cat_set:
-            FoodBuilder(elt).launch_request()
-
+        self.uris_cat = self.uris_cat.replace("'", "-") + '_dataset'
+        self.res.to_csv(self.uris_cat + '.csv', index=False, sep=';', header=True, columns=vars)
