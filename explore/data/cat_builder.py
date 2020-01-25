@@ -7,7 +7,7 @@ dansMonPanier category builder
 
 import requests
 import pandas as pd
-from data_features import *
+from .data_features import *
 
 
 class CatBuilder:
@@ -41,7 +41,5 @@ class CatBuilder:
 
         # Save clean df
         self.df.reset_index(drop=True)
-        self.df.to_csv('off_cat.csv', sep=';', index=False)
-
-
-CatBuilder().get_cat()
+        self.df.to_csv('off_cat.csv', sep=',', index=False)
+        self.df.to_csv('off_cat_pg.csv', sep=';', index=False)
