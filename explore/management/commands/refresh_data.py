@@ -4,8 +4,10 @@ to refresh data
 """
 
 from django.core.management.base import BaseCommand
-from explore.data.data_features import *
-from explore.data.food_builder import *
+import sys
+sys.path.insert(1, '/home/dev/monpanier/explore/data')
+from data_features import *
+from food_builder import *
 import psycopg2
 import glob
 import os
@@ -13,7 +15,7 @@ import os
 
 class Command(BaseCommand):
     args = ''
-    help = 'Export data to remote server'
+    help = 'Import fresh data to remote server'
 
     def handle(self, *args, **options):
 
