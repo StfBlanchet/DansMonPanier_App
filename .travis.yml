@@ -10,9 +10,9 @@ env: DJANGO_SETTINGS_MODULE="therightfood.settings.travis"
 services:
   - postgresql
 
-# branches:
-  # only:
-    # - the branch name
+branches:
+  only:
+    - stage
 
 script:
   - ./manage.py test
