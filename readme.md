@@ -1,3 +1,6 @@
+[![Build Status](https://travis-ci.org/StfBlanchet/DansMonPanier_App.svg?branch=master)](https://travis-ci.org/StfBlanchet/DansMonPanier_App)
+<hr>
+
 # dansMonPanier
 
 * [Description](#description)
