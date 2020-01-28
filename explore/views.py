@@ -1,6 +1,3 @@
-#! /usr/bin/env python3
-# coding: utf-8
-
 """
 dansMonPanier app
 File that manages views.
@@ -42,23 +39,20 @@ def results(request):
         q_ = q.split()
         # Put the main entity in the plural
         # if not the case
-        if not q_[0].endswith('s') and not q_[0].endswith('x') and not q_[0].endswith('u') \
-                and not q_[0].endswith('y'):
-            plur = q_[0] + "s"
-            q_[0] = plur
-            q_ = " ".join(q_)
+        if not q_[0].endswith('s') and not q_[0].endswith('x') \
+                and not q_[0].endswith('au') and not q_[0].endswith('eau'):
+            q_[0] = q_[0] + 's'
+        elif q_[0].endswith('au') or q_[0].endswith('eau'):
+            q_[0] = q_[0] + 'x'
         else:
-            q_ = q
+            q_[0] = q_[0]
+        q_ = " ".join(q_)
         search = q.split()
-        # Query the complete expression in category or name fields
-        dataset = Food.objects.filter(Q(category_group__unaccent__icontains=q_) | Q(name__unaccent__icontains=q))
-        if dataset.count() > 700:
-            # Refine results
-            dataset = Food.objects.filter(name__unaccent__startswith=search[0][:5].capitalize())
-            if q == 'lait':
-                dataset = dataset.exclude(name__icontains='laitue')
-            if unidecode(q) == 'cafe':
-                dataset = dataset.exclude(name__unaccent__icontains='cafeine')
+        # Query the complete expression in category_group field
+        dataset = Food.objects.filter(category_group__unaccent__icontains=q_)
+        if not dataset:
+            # Query the first two words only in category_group field
+            dataset = Food.objects.filter(category_group__unaccent__startswith=q_[:1])
         # Rank results
         ranking = request.GET.get('ranking')
         results = dataset
@@ -117,9 +111,7 @@ def item(request, id):
     features = Food.objects.filter(id=id)
     if request.user.is_authenticated:
         registered = Favorite().ref_list(request)
-        if registered:
-            return render(request, 'explore/item.html',
-                          {'features': features, 'registered': registered})
+        return render(request, 'explore/item.html', {'features': features, 'registered': registered})
     else:
         return render(request, 'explore/item.html', {'features': features})
 
@@ -192,7 +184,8 @@ def signin(request):
             messages.success(request, 'Bravo {}, vous avez rejoint la communauté !'.format(user.first_name))
             return HttpResponseRedirect(reverse('index'))
         else:
-            messages.warning(request, 'Informations non conformes aux règles de sécurité.')
+            messages.warning(request, 'Les informations fournies sont erronées ou non conformes aux règles de sécurité.'
+                                      ' Veuillez recommencer.')
             return render(request, 'explore/signin.html', {'form': form})
     else:
         form = UserForm()
