@@ -5,7 +5,7 @@
 
 * [Description](#description)
 * [User Journey](#user-journey)
-* [Data wrangling](#data wrangling)
+* [Data wrangling](#data-wrangling)
 * [Technical requirements](#technical-requirements)
 * [Status](#status)
 * [Contributing](#contributing)
