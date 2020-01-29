@@ -1,6 +1,3 @@
-#! /usr/bin/env python3
-# coding: utf-8
-
 """
 dansMonPanier app
 File that manages the creation
@@ -75,7 +72,7 @@ class Favorite(models.Model):
     that stores the products selected as
     favorites by the users.
     """
-    products = models.ForeignKey(Food, on_delete=models.DO_NOTHING)
+    products = models.ForeignKey(Food, on_delete=models.CASCADE)
     user = models.ForeignKey(User, on_delete=models.CASCADE)
 
     def ref_list(self, request):
