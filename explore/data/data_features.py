@@ -1,11 +1,9 @@
-#! /usr/bin/env python3
-# coding: utf-8
-
 """
 dansMonPanier data features
 """
 
 import os
+
 
 """
 Managing https requests
@@ -81,10 +79,11 @@ vars = [
     'proteins'
 ]
 
-# Manage category import
-off_cat = os.path.abspath('off_cat.csv')
-off_cat_pg = os.path.abspath('off_cat_pg.csv')
-cat_to_load = os.path.abspath('cat_to_load.txt')
+# Manage csv import & export
+my_path = os.path.abspath(os.path.dirname(__file__))
+off_cat = os.path.join(my_path, "../data/off_cat.csv")
+off_cat_pg = os.path.join(my_path, "../data/off_cat_pg.csv")
+cat_to_load = os.path.join(my_path, "../data/cat_to_load.txt")
 
 # Manage food facts import
 
@@ -133,3 +132,9 @@ cat_list = ["aliments d'origine végétale",
             "produits à tartiner",
             "epicerie",
             "produits de la mer"]
+
+cat_list_test = ["jus d'orange pur jus",
+                 "cacaos et chocolats en poudre",
+                 "céréales au chocolat",
+                 "mueslis aux fruits",
+                 "pains grillés"]
