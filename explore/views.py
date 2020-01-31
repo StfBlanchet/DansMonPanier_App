@@ -149,15 +149,15 @@ def my_favorites(request):
     """
     header = 'master'
     title = 'Mes favoris'
+    header_ = 'masthead'
+    title_ = 'Pas encore de favoris ? Lâchez-vous !'
     if request.user.is_authenticated:
         user = request.user
         favorites = Food.objects.filter(favorite__user=user)
         if len(favorites) > 0:
             return render(request, 'explore/favorites.html', {'favorites': favorites, 'class': header, 'title': title})
         else:
-            messages.info(request, mark_safe(
-                'Vous n\'avez pas encore enregistré de produit. Lâchez-vous !'))
-            return HttpResponseRedirect(reverse('index'))
+            return render(request, 'explore/index.html', {'class': header_, 'title': title_})
     else:
         return HttpResponseRedirect(reverse('index'))
 
