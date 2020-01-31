@@ -1,19 +1,7 @@
-#! /usr/bin/env python3
-# coding: utf-8
-
 """
 dansMonPanier Data Builder
 """
 
-"""
-TO BE FIXED
-
-Traceback (most recent call last):
-File "/Users/dev/Documents/dansMonPanier_staging/explore/data/food_builder.py", line 180, in <module>
-File "/Users/dev/Documents/dansMonPanier_staging/explore/data/food_builder.py", line 34, in __init__
-self.items = self.df.loc[self.df['category'] == self.cat, ['items']].values[0][0]
-IndexError: index 0 is out of bounds for axis 0 with size 0
-"""
 
 import pandas as pd
 from unidecode import unidecode
@@ -21,10 +9,10 @@ import re
 from math import *
 import requests
 import datetime
-# if from Django app
-# from .data_features import *
-# else:
+import sys
+sys.path.insert(1, '/path/to/data/dir') # replace with server home path to data
 from data_features import *
+
 
 """
 This class allows to automate 
@@ -35,14 +23,14 @@ data cleaning and collection.
 class FoodBuilder:
 
     def __init__(self, target):
-        # if from Django app
-        # self.df = pd.read_csv(os.path.abspath('explore/data/off_cat.csv'))
-        # else:
         self.df = pd.read_csv(off_cat)
-        self.cat = target
+        self.cat = str(target)
         # get the number of items in the target category
-        self.items = self.df.loc[self.df['category'] == self.cat, ['items']].values[0][0]
+        self.row = self.df[self.df.category == self.cat].reset_index(drop=True)
+        self.items = self.row.iat[0, 1]
         self.pages = []
+        self.clean_items = int()
+        self.csv_path = str()
 
     def launch_request(self):
         """
@@ -122,10 +110,7 @@ class FoodBuilder:
 
         # Drop rows where product profile completeness is missing or < 90%
         self.res.drop(self.res[self.res.completeness == ''].index, inplace=True)
-        self.res.drop(self.res[self.res.completeness < 0.9].index, inplace=True)
-
-        # Drop duplicates
-        self.res.drop_duplicates(subset=self.res.code, keep='first', inplace=True)
+        self.res.drop(self.res[self.res.completeness.astype(float) < 0.9].index, inplace=True)
 
         # Remove undesired tags from cols containing text
         cleaner_0 = re.compile(r'[\t\n\r"_*]')
@@ -180,23 +165,15 @@ class FoodBuilder:
         text_enriched.vegan = text_enriched.vegan.str.contains('en:vegan')
         text_enriched.vegetarian = text_enriched.vegetarian.str.contains('en:vegetarian')
 
-        # Merge and save
+        # Merge dataframes
         self.res = self.res.join(text_enriched)
         self.res = self.res.drop(text_cols_dup, axis=1)
         self.res = self.res.join(text_cleaned)
-        self.uris_cat = self.uris_cat.replace("'", "-")
-        self.res.to_csv(self.uris_cat + '_dataset.csv', index=False, sep=';', header=True, columns=vars)
 
+        # Check data attrition
+        self.clean_items = len(self.res.index)
 
-
-"""
-Load categories that were queried
-but not available in the database.
-"""
-
-with open('cat_to_load.txt') as f:
-    for item in f:
-        cat_set = item.split(',')
-        for elt in cat_set:
-            FoodBuilder(elt).launch_request()
-
+        # Save
+        csv_name = self.uris_cat.replace("'", "-") + '_dataset.csv'
+        self.csv_path = os.path.join(my_path, "../data/", csv_name)
+        self.res.to_csv(self.csv_path, index=False, sep=';', header=True, columns=vars)

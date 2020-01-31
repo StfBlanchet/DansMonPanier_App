@@ -11,6 +11,7 @@ urlpatterns = [
     path('user_logout/', views.user_logout, name='user_logout'),
     path('save_favorites/', views.save_favorites, name='save_favorites'),
     path('my_favorites/', views.my_favorites, name='my_favorites'),
+    path('remove_favorites/', views.remove_favorites, name='remove_favorites'),
     path('my_profile/', views.my_profile, name='my_profile'),
     path('legal/', views.legal, name='legal')
 ]

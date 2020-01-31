@@ -4,14 +4,13 @@ Configuration
 """
 
 from django.conf import settings
-
 from django.contrib import admin
 from django.urls import include, path
 
 urlpatterns = [
     path('', include('explore.urls')),
     # protect admin access by renaming url
-    path('7$AeT3_m!X5/', admin.site.urls),
+    path('eFv$951@Pl!*/', admin.site.urls),
 ]
 
 if settings.DEBUG:

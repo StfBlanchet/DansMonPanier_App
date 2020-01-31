@@ -20,7 +20,7 @@
   <link href="https://fonts.googleapis.com/css?family=Quicksand:400&display=swap" rel="stylesheet">
 
   <!-- Font Awesome Icons -->
-  <link href="{% static 'explore/vendor/fontawesome-free/css/all.min.css' %}" rel="stylesheet" type="text/css">
+  <link href="{% static 'explore/css/all.min.css' %}" rel="stylesheet" type="text/css">
 
   <!-- Theme CSS - Includes Bootstrap -->
   <link href="{% static 'explore/css/creative.css' %}" rel="stylesheet">
@@ -30,93 +30,106 @@
 <body id="page-top">
 
   <!-- Navigation -->
-  <nav class="navbar navbar-expand-lg navbar-light fixed-top py-3" id="mainNav">
-    <div class="navbar-brand">
-      <a href="{% url 'index' %}">
-        <img class="img-fluid" src="{% static 'explore/img/dansmonpanier_logo.png' %}" alt="DansMonPanier"></a>
-      <a class="brand h1" style="margin-left: -0.8rem" href="{% url 'index' %}">Dans-mon-panier</a>
-      </div>
-        <button class="navbar-toggler navbar-toggler-right" type="button" data-toggle="collapse" data-target="#navbarResponsive" aria-controls="navbarResponsive" aria-expanded="false" aria-label="Toggle navigation">
-        <span class="navbar-toggler-icon"></span>
-        </button>
-      <div class="collapse navbar-collapse" id="navbarResponsive">
-        <ul class="navbar-nav ml-auto mt-0 my-lg-0 w-100">
-          <li class="nav-item mt-2 w-75">
-        <form class="navbar-form" action="{% url 'results' %}" method="get" accept-charset="utf-8" role="search">
-          <input class="form-control" name="q" type="text" placeholder="Chercher">
-           <div class="dropdown dropleft d-inline">
-            <button type="button" class="btn btn-primary dropdown-toggle" data-toggle="dropdown">
-            </button>
-                <div class="dropdown-menu pl-3 pb-2">
-                  <h5 class="text-white my-2">Classement par :</h5>
-                  <label class="d-block"><input type="radio" name="ranking" value="nutrition" checked>&nbsp;&nbsp;score nutritionnel</label>
-                  <label class="d-block"><input type="radio" name="ranking" value="nova">&nbsp;&nbsp;groupe NOVA</label>
-                  <h5 class="text-white mt-3 mb-2">Filtres :</h5>
-                  <label class="d-block"><input type="radio" name="filtering" value="none" checked>&nbsp;&nbsp;aucun</label>
-                  <label class="d-block"><input type="radio" name="filtering" value="bio">&nbsp;&nbsp;agriculture biologique</label>
-                  <label class="d-block"><input type="radio" name="filtering" value="fsc">&nbsp;&nbsp;écolabel (FSC)</label>
-                  <label class="d-block"><input type="radio" name="filtering" value="palm-oil-free">&nbsp;&nbsp;sans huile de palme</label>
-                  <label class="d-block"><input type="radio" name="filtering" value="fair-trade">&nbsp;&nbsp;commerce équitable</label>
-                  <label class="d-block"><input type="radio" name="filtering" value="made-in-france">&nbsp;&nbsp;origine France</label>
-                </div>
+  <a class="menu-toggle rounded" href="#">
+    <i class="fas fa-bars fa-lg pl-1"></i>
+  </a>
+  <nav id="sidebar-wrapper">
+    <ul class="sidebar-nav text-right w-100">
+      <li class="sidebar-nav-item pb-3">
+        <form class="navbar-form mr-3" action="{% url 'results' %}" method="get" accept-charset="utf-8" role="search">
+          <input class="form-control" name="q" type="text" placeholder="Aliment">
+          <div class="d-inline">
+          <button type="button" class="btn btn-primary text-x-small text-uppercase mt-0" data-toggle="dropdown">options</button>
+              <div class="dropdown-menu dropdown-menu-right pb-1">
+                  <h5 class="text-white my-2 ml-3 pb-2">Classement par :</h5>
+                  <label class="d-block"><input class="ml-3 mr-2" type="radio" name="ranking" value="nutrition" checked>score nutritionnel</label>
+                  <label class="d-block"><input class="ml-3 mr-2" type="radio" name="ranking" value="nova">groupe NOVA</label>
+                  <h5 class="text-white mt-3 ml-3 mb-2">Filtres :</h5>
+                  <label class="d-block"><input class="ml-3 mr-2" type="radio" name="filtering" value="none" checked>aucun</label>
+                  <label class="d-block"><input class="ml-3 mr-2" type="radio" name="filtering" value="bio">agriculture biologique</label>
+                  <label class="d-block"><input class="ml-3 mr-2" type="radio" name="filtering" value="fsc">écolabel (FSC)</label>
+                  <label class="d-block"><input class="ml-3 mr-2" type="radio" name="filtering" value="palm-oil-free">sans huile de palme</label>
+                  <label class="d-block"><input class="ml-3 mr-2" type="radio" name="filtering" value="fair-trade">commerce équitable</label>
+                  <label class="d-block"><input class="ml-3 mr-2" type="radio" name="filtering" value="made-in-france">origine France</label>
+              <hr class="mb-1 light">
+                <button class="btn w-100 text-uppercase text-white text-right text-x-small" type="submit">chercher&nbsp;&nbsp;<i class="fas fa-search fa-lg deep_purple"></i></button>
               </div>
+          </div>
         </form>
-          </li>
-          <li class="nav-item mt-2">
-           {% if user.is_authenticated %}
-            <a title="Mon profil" href="{% url 'my_profile' %}" class="mid_purple"><i class="far fa-user mb-3"></i></a>
-          </li>
-          <li class="nav-item mt-1">
-            <a title="Mes favoris" href="{% url 'my_favorites' %}" class="mid_purple"><i class="far fa-bookmark mb-3"></i></a>
-          </li>
-          <li class="nav-item mt-1 pb-0">
-            <a title="Déconnexion" href="{% url 'user_logout' %}" class="mid_purple"><i class="fas fa-sign-out-alt mb-3"></i></a>
-          </li>
-          {% else %}
-          <li class="nav-item mt-2">
-            <a title="Connexion / Inscription" href="{% url 'signin' %}" class="mid_purple"><i class="far fa-user mb-3"></i></a>
-          </li>
-          {% endif %}
-        </ul>
-      </div>
-      <!-- Messages Section -->
+       </div>
+      </li>
+       {% if user.is_authenticated %}
+      <li class="sidebar-nav-item pr-3">
+        <a href="{% url 'my_profile' %}">Mon compte&nbsp;&nbsp;<i class="fas fa-user fa-lg mr-0 pr-0 deep_purple"></i></a>
+      </li>
+      <li class="sidebar-nav-item pr-3">
+        <a href="{% url 'my_favorites' %}">Mes favoris&nbsp;&nbsp;<i class="fas fa-shopping-basket fa-lg mr-0 pr-0 deep_purple"></i></a>
+      </li>
+      <li class="sidebar-nav-item pr-3">
+        <a href="{% url 'user_logout' %}">Déconnexion&nbsp;&nbsp;<i class="fas fa-sign-out-alt fa-lg mr-0 pr-0 deep_purple"></i></a>
+      </li>
+      {% else %}
+      <li class="sidebar-nav-item pr-3">
+        <a href="{% url 'signin' %}">Connexion / Inscription&nbsp;&nbsp;<i class="fas fa-sign-in-alt fa-lg mr-0 pr-0 deep_purple"></i></a>
+      </li>
+      {% endif %}
+      <li class="sidebar-nav-item pr-3">
+        <a class="js-scroll-trigger" href="#about">A propos&nbsp;&nbsp;<i class="fas fa-info-circle fa-lg mr-0 pr-0 deep_purple"></i></a>
+      </li>
+    </ul>
+  </nav>
+
+    <!-- Messages Section -->
       {% if messages %}
             {% for message in messages %}
               <div class="fixed-bottom alert alert-info alert-dismissible m-auto fade show" role="alert">
                 {{ message }}
-                <button type="button" class="close" data-dismiss="alert" aria-label="Close">
-                  <span aria-hidden="true">&times;</span>
-                </button>
+                <button type="button" class="text-uppercase btn btn-secondary btn-sm" data-dismiss="alert" aria-label="Close">ok</button>
               </div>
             {% endfor %}
       {% endif %}
-  </nav>
+
+  <!-- Header -->
+  <header class="{{ class }}">
+    <div class="container-fluid">
+      <a href="{% url 'index' %}" class="h4 d-inline mid_purple ml-0 pl-0"><i class="fas fa-shopping-basket fa-lg mr-2 mr-0 mid_purple"></i>Dans-mon-panier</a>
+    </div>
+    <div class="container text-center">
+      <h1 class="text-uppercase text-white font-weight-bold">{{ title }}</h1>
+    </div>
+      {% block header %} {% endblock %}
+  </header>
 
   {% block content %} {% endblock %}
 
   <!-- Footer -->
-  <footer class="page-footer py-3">
+  <footer id="contact" class="page-footer py-3">
     <div class="container">
       <div class="row">
         <div class="col-lg-6 col-md-6 text-center">
           <div class="small text-center"><a href="{% url 'legal' %}">Mentions légales</a></div>
         </div>
         <div class="col-lg-6 col-md-6 text-center">
-          <div class="text-center"><a href="https://github.com/StfBlanchet/"><span class="small">&copy; Stéphanie Blanchet, 2020.</span> <i class="fab fa-github"></i></a></div>
+          <div class="text-center"><a href="https://github.com/StfBlanchet/" target="blank_"><span class="small">&copy; Stéphanie Blanchet, 2020.</span> <i class="fab fa-github"></i></a></div>
         </div>
       </div>
     </div>
   </footer>
 
+  <!-- Scroll to Top Button -->
+  <a class="scroll-to-top rounded js-scroll-trigger" href="#page-top">
+    <i class="fas fa-angle-up"></i>
+  </a>
+
   <!-- Bootstrap core JavaScript -->
-  <script src="{% static 'explore/vendor/jquery/jquery.min.js' %}"></script>
-  <script src="{% static 'explore/vendor/bootstrap/js/bootstrap.bundle.min.js' %}"></script>
+  <script src="{% static 'explore/js/jquery.min.js' %}"></script>
+  <script src="{% static 'explore/js/bootstrap.bundle.min.js' %}"></script>
 
   <!-- Plugin JavaScript -->
-  <script src="{% static 'explore/vendor/jquery-easing/jquery.easing.min.js' %}"></script>
+  <script src="{% static 'explore/js/jquery.easing.min.js' %}"></script>
 
   <!-- Custom scripts for this template -->
-  <script src="{% static 'explore/js/creative.min.js' %}"></script>
+  <script src="{% static 'explore/js/dansmonpanier.js' %}"></script>
 
 </body>
 

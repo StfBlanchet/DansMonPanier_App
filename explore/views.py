@@ -1,6 +1,3 @@
-#! /usr/bin/env python3
-# coding: utf-8
-
 """
 dansMonPanier app
 File that manages views.
@@ -23,7 +20,9 @@ def index(request):
     """
     Function to return the home page.
     """
-    return render(request, 'explore/index.html')
+    header = 'masthead'
+    title = 'Je sais ce que je mange !'
+    return render(request, 'explore/index.html', {'class': header, 'title': title})
 
 
 def results(request):
@@ -31,6 +30,8 @@ def results(request):
     Function to return search results
     according to the user query.
     """
+    header = 'master'
+    title = 'Faites le bon choix !'
     q = request.GET.get('q')
     if q == '' or q == ' ' or len(q) < 3:
         # prevent empty query
@@ -42,23 +43,20 @@ def results(request):
         q_ = q.split()
         # Put the main entity in the plural
         # if not the case
-        if not q_[0].endswith('s') and not q_[0].endswith('x') and not q_[0].endswith('u') \
-                and not q_[0].endswith('y'):
-            plur = q_[0] + "s"
-            q_[0] = plur
-            q_ = " ".join(q_)
+        if not q_[0].endswith('s') and not q_[0].endswith('x') \
+                and not q_[0].endswith('au') and not q_[0].endswith('eau'):
+            q_[0] = q_[0] + 's'
+        elif q_[0].endswith('au') or q_[0].endswith('eau'):
+            q_[0] = q_[0] + 'x'
         else:
-            q_ = q
+            q_[0] = q_[0]
+        q_ = " ".join(q_)
         search = q.split()
-        # Query the complete expression in category or name fields
-        dataset = Food.objects.filter(Q(category_group__unaccent__icontains=q_) | Q(name__unaccent__icontains=q))
-        if dataset.count() > 700:
-            # Refine results
-            dataset = Food.objects.filter(name__unaccent__startswith=search[0][:5].capitalize())
-            if q == 'lait':
-                dataset = dataset.exclude(name__icontains='laitue')
-            if unidecode(q) == 'cafe':
-                dataset = dataset.exclude(name__unaccent__icontains='cafeine')
+        # Query the complete expression in category_group field
+        dataset = Food.objects.filter(category_group__unaccent__icontains=q_)
+        if not dataset:
+            # Query the first two words only in category_group field
+            dataset = Food.objects.filter(category_group__unaccent__startswith=q_[:1])
         # Rank results
         ranking = request.GET.get('ranking')
         results = dataset
@@ -93,9 +91,9 @@ def results(request):
                 # check the user favorite list
                 # so to prevent duplicates
                 registered = Favorite().ref_list(request)
-                return render(request, 'explore/results.html', {'registered': registered, 'results': data})
+                return render(request, 'explore/results.html', {'registered': registered, 'results': data, 'class': header, 'title': title})
             else:
-                return render(request, 'explore/results.html', {'results': data})
+                return render(request, 'explore/results.html', {'results': data, 'class': header, 'title': title})
         else:
             target = Category.objects.filter(category__icontains=q)
             if target:
@@ -114,14 +112,13 @@ def item(request, id):
     Function to return the features
     of a targeted product.
     """
+    header = 'food_item'
     features = Food.objects.filter(id=id)
     if request.user.is_authenticated:
         registered = Favorite().ref_list(request)
-        if registered:
-            return render(request, 'explore/item.html',
-                          {'features': features, 'registered': registered})
+        return render(request, 'explore/item.html', {'features': features, 'class': header, 'registered': registered})
     else:
-        return render(request, 'explore/item.html', {'features': features})
+        return render(request, 'explore/item.html', {'features': features, 'class': header})
 
 
 def save_favorites(request):
@@ -133,11 +130,9 @@ def save_favorites(request):
         user = request.user
         if request.method == 'POST':
             p = request.POST.get('p')
-            new = Food.objects.get(pk=p)
-            favorites = Favorite()
-            favorites.products = new
-            favorites.user = user
-            favorites.save()
+            product = Food.objects.get(pk=p)
+            add_favorite = Favorite(products=product, user=user)
+            add_favorite.save()
             messages.success(request, 'Produit enregistré !')
             return HttpResponseRedirect(request.META.get('HTTP_REFERER', '/'))
     else:
@@ -152,11 +147,13 @@ def my_favorites(request):
     Function to display
     the user's favorites.
     """
+    header = 'master'
+    title = 'Mes favoris'
     if request.user.is_authenticated:
         user = request.user
         favorites = Food.objects.filter(favorite__user=user)
         if len(favorites) > 0:
-            return render(request, 'explore/favorites.html', {'favorites': favorites})
+            return render(request, 'explore/favorites.html', {'favorites': favorites, 'class': header, 'title': title})
         else:
             messages.info(request, mark_safe(
                 'Vous n\'avez pas encore enregistré de produit. Lâchez-vous !'))
@@ -165,13 +162,31 @@ def my_favorites(request):
         return HttpResponseRedirect(reverse('index'))
 
 
+def remove_favorites(request):
+    """
+    Function to remove products
+    from favorites.
+    """
+    user = request.user
+    if request.method == 'POST':
+        r = request.POST.get('r')
+        Favorite.objects.filter(Q(products=r) & Q(user=user)).delete()
+        messages.success(request, 'Produit supprimé !')
+        return HttpResponseRedirect(request.META.get('HTTP_REFERER', '/'))
+    else:
+        return HttpResponseRedirect(request.META.get('HTTP_REFERER', '/'))
+
+
 def my_profile(request):
     """
     Function to return
     user profile.
     """
+    header = 'master'
     if request.user.is_authenticated:
-        return render(request, 'explore/profile.html', {})
+        user = request.user
+        title = user.first_name
+        return render(request, 'explore/profile.html', {'class': header, 'title': title})
     else:
         return HttpResponseRedirect(reverse('index'))
 
@@ -181,6 +196,8 @@ def signin(request):
     Function to register
     new user.
     """
+    header = 'master'
+    title = 'Votre espace'
     if request.method == 'POST':
         form = UserForm(request.POST)
         if form.is_valid():
@@ -192,11 +209,12 @@ def signin(request):
             messages.success(request, 'Bravo {}, vous avez rejoint la communauté !'.format(user.first_name))
             return HttpResponseRedirect(reverse('index'))
         else:
-            messages.warning(request, 'Informations non conformes aux règles de sécurité.')
-            return render(request, 'explore/signin.html', {'form': form})
+            messages.warning(request, 'Les informations fournies sont erronées ou non conformes aux règles de sécurité.'
+                                      ' Veuillez recommencer.')
+            return render(request, 'explore/signin.html', {'form': form, 'class': header, 'title': title})
     else:
         form = UserForm()
-        return render(request, 'explore/signin.html', {'form': form})
+        return render(request, 'explore/signin.html', {'form': form, 'class': header, 'title': title})
 
 
 def user_login(request):
@@ -204,6 +222,8 @@ def user_login(request):
     Function to allow
     the user to log in.
     """
+    header = 'master'
+    title = 'Votre espace'
     if request.method == 'POST':
         username = request.POST.get('username')
         password = request.POST.get('password')
@@ -216,7 +236,7 @@ def user_login(request):
             messages.warning(request, 'Identifiants incorrects.')
             return HttpResponseRedirect(request.META.get('HTTP_REFERER', '/'))
     else:
-        return render(request, 'explore/signin.html', {})
+        return render(request, 'explore/signin.html', {'class': header, 'title': title})
 
 
 def user_logout(request):
@@ -234,4 +254,6 @@ def legal(request):
     Function to display
     the legal notice.
     """
-    return render(request, 'explore/legal.html', {})
+    header = 'master'
+    title = 'Mentions légales'
+    return render(request, 'explore/legal.html', {'class': header, 'title': title})

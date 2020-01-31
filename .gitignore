@@ -1,8 +1,10 @@
 # Production
-.env
-therightfood/settings/production.py
-__pycache__
+therightfood/settings/
+therightfood/static/
+therightfood/settings
 therightfood/static
+explore/data_local
+explore/management/commands/refresh_data_test_local.py
 
 # Mac/OSX
 .DS_Store
@@ -14,6 +16,7 @@ therightfood/.DS_Store
 .idea/
 
 # Byte-compiled / optimized / DLL files
+__pycache__
 __pycache__/
 *.py[cod]
 *$py.class
