@@ -1,8 +1,8 @@
 # dansMonPanier
 
 * [Description](#description)
-* [User Journey](#user-journey)
-* [Data Wrangling](#data-wrangling)
+* [User journey](#user-journey)
+* [Data wrangling](#data-wrangling)
 * [Technical requirements](#technical-requirements)
 * [Status](#status)
 * [Contributing](#contributing)
