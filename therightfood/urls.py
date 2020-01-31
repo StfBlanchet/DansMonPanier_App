@@ -10,7 +10,7 @@ from django.urls import include, path
 urlpatterns = [
     path('', include('explore.urls')),
     # protect admin access by renaming url
-    path('eFv$951@Pl!*/', admin.site.urls),
+    path('**********/', admin.site.urls),
 ]
 
 if settings.DEBUG:
