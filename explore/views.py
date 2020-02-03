@@ -129,10 +129,13 @@ def my_favorites(request):
         favorites = Food.objects.filter(favorite__user=request.user)
         if len(favorites) > 0:
             context = {'favorites': favorites, 'class': header[0], 'title': title[0]}
-            return render(request, 'explore/favorites.html', context)
+            temp = 'explore/favorites.html'
         else:
             context = {'class': header[1], 'title': title[1]}
-            return render(request, 'explore/index.html', context)
+            temp = 'explore/index.html'
+        return render(request, temp, context)
+    else:
+        return HttpResponseRedirect(reverse('index'))
 
 
 def remove_favorites(request):
