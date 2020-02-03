@@ -126,6 +126,7 @@ def my_favorites(request):
     header = 'master'
     header_ = 'masthead'
     title = 'Mes favoris'
+    header_ = 'masthead'
     title_ = 'Pas encore de favoris ? Lâchez-vous !'
     if request.user.is_authenticated:
         favorites = Food.objects.filter(favorite__user=request.user)
@@ -136,6 +137,7 @@ def my_favorites(request):
             context = {'class': header_, 'title': title_}
             temp = 'explore/index.html'
         return render(request, temp, context)
+            return render(request, 'explore/index.html', {'class': header_, 'title': title_})
     else:
         return HttpResponseRedirect(reverse('index'))
 
