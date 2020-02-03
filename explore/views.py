@@ -39,7 +39,7 @@ def results(request):
         messages.info(request, 'Veuillez saisir un aliment.')
         return HttpResponseRedirect(request.META.get('HTTP_REFERER', '/'))
     else:
-        # Remove accents
+        # Remove accents and pluralize
         q = Process().pluralize(raw_query)
         # Query the complete expression in category_group field
         dataset = Food.objects.filter(category_group__unaccent__icontains=q)
@@ -187,7 +187,7 @@ def signin(request):
             msg = 'Informations erronées ou non conformes aux règles de sécurité. Veuillez recommencer.'
             messages.info(request, msg)
     return render(request, 'explore/signin.html', context)
-
+  
 
 def user_login(request):
     """

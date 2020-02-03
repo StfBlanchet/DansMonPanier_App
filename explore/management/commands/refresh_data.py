@@ -7,7 +7,6 @@ from django.core.management.base import BaseCommand
 import sys
 sys.path.insert(1, '/path/to/data/dir') # replace with server home path to data
 from cat_builder import *
-sys.path.insert(1, '/home/dev/monpanier/explore/data')
 from data_features import *
 from food_builder import *
 import psycopg2
