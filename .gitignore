@@ -1,9 +1,9 @@
 # Production
-therightfood/settings/
-therightfood/static/
-therightfood/settings
+therightfood/settings/server_init.py
+therightfood/settings/production.py
+therightfood/settings/vedtes
 therightfood/static
-explore/data_local
+explore/data/data_local
 explore/management/commands/refresh_data_test_local.py
 
 # Mac/OSX

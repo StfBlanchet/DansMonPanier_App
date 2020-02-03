@@ -1,5 +1,5 @@
 """
-Django prod settings
+Django prod settings 
 for therightfood project
 """
 
@@ -26,14 +26,14 @@ DATABASES = {
 
 STATIC_ROOT = os.path.join(BASE_DIR, 'static/')
 
-CSRF_COOKIE_SECURE = True
+CSRF_COOKIE_SECURE = True   
 
-SESSION_COOKIE_SECURE = True
+SESSION_COOKIE_SECURE = True    
 
 X_FRAME_OPTIONS = 'DENY'
 
 SECURE_BROWSER_XSS_FILTER = True
 
-SECURE_CONTENT_TYPE_NOSNIFF = True
+SECURE_CONTENT_TYPE_NOSNIFF = True  
 
 # SECURE_SSL_REDIRECT = True  # activate once SSL is set up
