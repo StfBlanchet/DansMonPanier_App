@@ -5,18 +5,18 @@
   {% load static %}
 
   <!-- SignUp Section -->
-  <section class="page-section pt-5">
+  <section class="page-section my-4">
     <div class="container">
       <p class="my-0"><a href="#signup">Inscription</a> | <a href="#signin">Connexion</a></p>
       <br>
-      <div class="row">
+      <div class="row mt-0">
         <div class="col-lg-6 col-md-6" id="signin">
           <div class="jumbotron pt-5">
             <h2 class="h3">Accédez à votre espace</h2>
             <br>
               <form method="post" action="{% url 'user_login' %}">
                 {% csrf_token %}
-                <div class="small">
+                <div class="text-small">
                 <label class="d-block" id="username">Email</label>
                 <input class="mb-3" type="text" name="username" autofocus="true">
                 <label class="d-block" id="password">Mot de passe</label>
@@ -32,7 +32,7 @@
             <form method="post">
               {% csrf_token %}
               {% for field in form %}
-              <div class="small">
+              <div class="text-small">
                 <label class="d-block mb-0">{{ field.label_tag }}</label>
                 <div class="mb-3">{{ field }}</div>
               </div>

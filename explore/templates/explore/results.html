@@ -6,7 +6,7 @@
 
 
   <!-- Results Section -->
-  <section class="page-section">
+  <section class="page-section my-4">
     <div class="container justify-content-center">
       <ul class="list-unstyled row">
        {% for food in results %}
@@ -19,7 +19,7 @@
               {% endif %}
              </a>
             <div class="card-body">
-              <h3 class="card-title h4 mid_purple"><a href="{% url 'item' food.id %}">{{ food.name }}</a></h3>
+              <h3 class="card-title h4 mt-2 mid_purple"><a href="{% url 'item' food.id %}">{{ food.name }}</a></h3>
               {% if food.brands %}
                 <p class="card-text">Marque : {{ food.brands }}</p>
               {% else %}

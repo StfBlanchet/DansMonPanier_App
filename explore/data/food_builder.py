@@ -2,7 +2,6 @@
 dansMonPanier Data Builder
 """
 
-
 import pandas as pd
 from unidecode import unidecode
 import re
@@ -28,6 +27,7 @@ class FoodBuilder:
         # get the number of items in the target category
         self.row = self.df[self.df.category == self.cat].reset_index(drop=True)
         self.items = self.row.iat[0, 1]
+        print(self.cat, ": ", self.items, "items")
         self.pages = []
         self.clean_items = int()
         self.csv_path = str()
@@ -111,6 +111,7 @@ class FoodBuilder:
         # Drop rows where product profile completeness is missing or < 90%
         self.res.drop(self.res[self.res.completeness == ''].index, inplace=True)
         self.res.drop(self.res[self.res.completeness.astype(float) < 0.9].index, inplace=True)
+        self.res.drop(self.res[self.res.completeness < 0.9].index, inplace=True)
 
         # Remove undesired tags from cols containing text
         cleaner_0 = re.compile(r'[\t\n\r"_*]')
@@ -177,3 +178,5 @@ class FoodBuilder:
         csv_name = self.uris_cat.replace("'", "-") + '_dataset.csv'
         self.csv_path = os.path.join(my_path, "../data/", csv_name)
         self.res.to_csv(self.csv_path, index=False, sep=';', header=True, columns=vars)
+        self.uris_cat = self.uris_cat.replace("'", "-") + '_dataset'
+        self.res.to_csv(self.uris_cat + '.csv', index=False, sep=';', header=True, columns=vars)

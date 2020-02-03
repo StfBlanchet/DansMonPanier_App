@@ -10,10 +10,10 @@ from django.contrib.auth import authenticate, login, logout
 from django.http import HttpResponseRedirect
 from django.contrib import messages
 from django.utils.safestring import mark_safe
-from .models import Category, Food, Favorite
+from .models import Food, Favorite
 from .forms import UserForm
+from .process import *
 from django.db.models import Q
-from unidecode import unidecode
 
 
 def index(request):
@@ -32,31 +32,20 @@ def results(request):
     """
     header = 'master'
     title = 'Faites le bon choix !'
-    q = request.GET.get('q')
-    if q == '' or q == ' ' or len(q) < 3:
+    raw_query = request.GET.get('q')
+    rq = raw_query.split()
+    if len(rq) == 0 or len(rq[0]) < 3:
         # prevent empty query
-        messages.warning(request, "Veuillez saisir un aliment.")
+        messages.info(request, 'Veuillez saisir un aliment.')
         return HttpResponseRedirect(request.META.get('HTTP_REFERER', '/'))
     else:
         # Remove accents
-        q = unidecode(q)
-        q_ = q.split()
-        # Put the main entity in the plural
-        # if not the case
-        if not q_[0].endswith('s') and not q_[0].endswith('x') \
-                and not q_[0].endswith('au') and not q_[0].endswith('eau'):
-            q_[0] = q_[0] + 's'
-        elif q_[0].endswith('au') or q_[0].endswith('eau'):
-            q_[0] = q_[0] + 'x'
-        else:
-            q_[0] = q_[0]
-        q_ = " ".join(q_)
-        search = q.split()
+        q = Process().pluralize(raw_query)
         # Query the complete expression in category_group field
-        dataset = Food.objects.filter(category_group__unaccent__icontains=q_)
+        dataset = Food.objects.filter(category_group__unaccent__icontains=q)
         if not dataset:
             # Query the first two words only in category_group field
-            dataset = Food.objects.filter(category_group__unaccent__startswith=q_[:1])
+            dataset = Food.objects.filter(category_group__unaccent__startswith=q[:1])
         # Rank results
         ranking = request.GET.get('ranking')
         results = dataset
@@ -84,27 +73,19 @@ def results(request):
             # filter results by fair_trade criteria
             data = results.filter(fair_trade=True)[:100]
         elif filtering == 'fsc':
-            # filter results by fair_trade criteria
+            # filter results by fsc criteria
             data = results.filter(fsc=True)[:100]
         if data:
+            context = {'results': data, 'class': header, 'title': title}
             if request.user.is_authenticated:
                 # check the user favorite list
                 # so to prevent duplicates
                 registered = Favorite().ref_list(request)
-                return render(request, 'explore/results.html', {'registered': registered, 'results': data, 'class': header, 'title': title})
-            else:
-                return render(request, 'explore/results.html', {'results': data, 'class': header, 'title': title})
+                context = {'registered': registered, 'results': data, 'class': header, 'title': title}
+            return render(request, 'explore/results.html', context)
         else:
-            target = Category.objects.filter(category__icontains=q)
-            if target:
-                # save target for future db update
-                with open('explore/data/cat_to_load.txt', 'a') as f:
-                    f.write(str(target[0]) + ', ')
-                messages.warning(request, 'La catégorie "{}" ne figure pas encore dans notre base.'.format(target[0]))
-                return HttpResponseRedirect(request.META.get('HTTP_REFERER', '/'))
-            else:
-                messages.warning(request, 'Aucun résultat ne correspond à votre recherche.')
-                return HttpResponseRedirect(request.META.get('HTTP_REFERER', '/'))
+            messages.info(request, 'Aucun résultat ne correspond à votre recherche.')
+            return HttpResponseRedirect(request.META.get('HTTP_REFERER', '/'))
 
 
 def item(request, id):
@@ -114,11 +95,11 @@ def item(request, id):
     """
     header = 'food_item'
     features = Food.objects.filter(id=id)
+    context = {'features': features, 'class': header}
     if request.user.is_authenticated:
         registered = Favorite().ref_list(request)
-        return render(request, 'explore/item.html', {'features': features, 'class': header, 'registered': registered})
-    else:
-        return render(request, 'explore/item.html', {'features': features, 'class': header})
+        context = {'features': features, 'class': header, 'registered': registered}
+    return render(request, 'explore/item.html', context)
 
 
 def save_favorites(request):
@@ -127,19 +108,14 @@ def save_favorites(request):
     as favorites.
     """
     if request.user.is_authenticated:
-        user = request.user
-        if request.method == 'POST':
-            p = request.POST.get('p')
-            product = Food.objects.get(pk=p)
-            add_favorite = Favorite(products=product, user=user)
-            add_favorite.save()
-            messages.success(request, 'Produit enregistré !')
-            return HttpResponseRedirect(request.META.get('HTTP_REFERER', '/'))
+        p = request.POST.get('p')
+        product = Food.objects.get(pk=p)
+        Favorite(products=product, user=request.user).save()
+        msg = 'Produit enregistré !'
     else:
-        messages.info(request, mark_safe(
-            '<a href="/signin"><u>Connectez-vous ou inscrivez-vous</u></a> pour enregistrer des produits.'
-        ))
-        return HttpResponseRedirect(request.META.get('HTTP_REFERER', '/'))
+        msg = mark_safe('<a href="/signin"><u>Connectez-vous ou inscrivez-vous</u></a> pour enregistrer des produits.')
+    messages.info(request, msg)
+    return HttpResponseRedirect(request.META.get('HTTP_REFERER', '/'))
 
 
 def my_favorites(request):
@@ -148,16 +124,18 @@ def my_favorites(request):
     the user's favorites.
     """
     header = 'master'
+    header_ = 'masthead'
     title = 'Mes favoris'
+    title_ = 'Pas encore de favoris ? Lâchez-vous !'
     if request.user.is_authenticated:
-        user = request.user
-        favorites = Food.objects.filter(favorite__user=user)
+        favorites = Food.objects.filter(favorite__user=request.user)
         if len(favorites) > 0:
-            return render(request, 'explore/favorites.html', {'favorites': favorites, 'class': header, 'title': title})
+            context = {'favorites': favorites, 'class': header, 'title': title}
+            temp = 'explore/favorites.html'
         else:
-            messages.info(request, mark_safe(
-                'Vous n\'avez pas encore enregistré de produit. Lâchez-vous !'))
-            return HttpResponseRedirect(reverse('index'))
+            context = {'class': header_, 'title': title_}
+            temp = 'explore/index.html'
+        return render(request, temp, context)
     else:
         return HttpResponseRedirect(reverse('index'))
 
@@ -167,14 +145,11 @@ def remove_favorites(request):
     Function to remove products
     from favorites.
     """
-    user = request.user
-    if request.method == 'POST':
+    if request.user.is_authenticated:
         r = request.POST.get('r')
-        Favorite.objects.filter(Q(products=r) & Q(user=user)).delete()
-        messages.success(request, 'Produit supprimé !')
-        return HttpResponseRedirect(request.META.get('HTTP_REFERER', '/'))
-    else:
-        return HttpResponseRedirect(request.META.get('HTTP_REFERER', '/'))
+        Favorite.objects.filter(Q(products=r) & Q(user=request.user)).delete()
+        messages.info(request, 'Produit supprimé !')
+    return HttpResponseRedirect(request.META.get('HTTP_REFERER', '/'))
 
 
 def my_profile(request):
@@ -182,8 +157,8 @@ def my_profile(request):
     Function to return
     user profile.
     """
-    header = 'master'
     if request.user.is_authenticated:
+        header = 'master'
         user = request.user
         title = user.first_name
         return render(request, 'explore/profile.html', {'class': header, 'title': title})
@@ -198,23 +173,22 @@ def signin(request):
     """
     header = 'master'
     title = 'Votre espace'
+    form = UserForm(request.POST)
+    context = {'form': form, 'class': header, 'title': title}
     if request.method == 'POST':
-        form = UserForm(request.POST)
         if form.is_valid():
             form.save()
             username = form.cleaned_data.get('username')
             raw_password = form.cleaned_data.get('password1')
             user = authenticate(username=username, password=raw_password)
             login(request, user)
-            messages.success(request, 'Bravo {}, vous avez rejoint la communauté !'.format(user.first_name))
+            msg = 'Bravo {}, vous avez rejoint la communauté !'.format(user.first_name)
+            messages.info(request, msg)
             return HttpResponseRedirect(reverse('index'))
         else:
-            messages.warning(request, 'Les informations fournies sont erronées ou non conformes aux règles de sécurité.'
-                                      ' Veuillez recommencer.')
-            return render(request, 'explore/signin.html', {'form': form, 'class': header, 'title': title})
-    else:
-        form = UserForm()
-        return render(request, 'explore/signin.html', {'form': form, 'class': header, 'title': title})
+            msg = 'Informations erronées ou non conformes aux règles de sécurité. Veuillez recommencer.'
+            messages.info(request, msg)
+    return render(request, 'explore/signin.html', context)
 
 
 def user_login(request):
@@ -230,13 +204,13 @@ def user_login(request):
         user = authenticate(username=username, password=password)
         if user:
             login(request, user)
-            messages.success(request, 'Heureux de vous revoir, {} !'.format(user.first_name))
+            msg = 'Heureux de vous revoir, {} !'.format(user.first_name)
+            messages.info(request, msg)
             return HttpResponseRedirect(reverse('index'))
         else:
-            messages.warning(request, 'Identifiants incorrects.')
-            return HttpResponseRedirect(request.META.get('HTTP_REFERER', '/'))
-    else:
-        return render(request, 'explore/signin.html', {'class': header, 'title': title})
+            msg = 'Identifiants incorrects.'
+            messages.info(request, msg)
+    return render(request, 'explore/signin.html', {'class': header, 'title': title})
 
 
 def user_logout(request):
@@ -245,7 +219,7 @@ def user_logout(request):
     the user to log out properly.
     """
     logout(request)
-    messages.success(request, 'Merci de nous avoir rendu visite. A bientôt !')
+    messages.info(request, 'Merci de nous avoir rendu visite. A bientôt !')
     return HttpResponseRedirect(reverse('index'))
 
 

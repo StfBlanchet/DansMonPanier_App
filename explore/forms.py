@@ -1,6 +1,3 @@
-#! /usr/bin/env python3
-# coding: utf-8
-
 """
 dansMonPanier app
 File that manages user creation form.

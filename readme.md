@@ -1,8 +1,11 @@
+[![Build Status](https://travis-ci.org/StfBlanchet/DansMonPanier_App.svg?branch=master)](https://travis-ci.org/StfBlanchet/DansMonPanier_App)
+<hr>
+
 # dansMonPanier
 
 * [Description](#description)
 * [User Journey](#user-journey)
-* [Data](#data)
+* [Data Wrangling](#data-wrangling)
 * [Technical requirements](#technical-requirements)
 * [Status](#status)
 * [Contributing](#contributing)
@@ -35,7 +38,7 @@ When a product has already been selected by the user, the button “save” is n
 
 The user accesses the login page by clicking on the user icon in the top navbar to register or login, as appropriate. Whether or not she is a new user, she is greeted with a welcome message if all has gone well. Otherwise, an error message is displayed ("Incorrect credentials", "You must provide valid information to register"). When the user logs out, a good bye message appears.
 
-## Data
+## Data Wrangling
 
 Open Food Facts is a food products database made "by everyone, for everyone", which ensures its various and ever growing content. The drawback of this openness is the mixed quality of data. Any project aiming to use them should first carry out a detailed analysis of their overabundant and sometimes redundant facets, with the risk of delivering inaccurate or misleading results.
 
