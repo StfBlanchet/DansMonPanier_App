@@ -5,8 +5,9 @@ refresh data module
 
 from django.core.management.base import BaseCommand
 import sys
-sys.path.insert(1, '/home/dev/monpanier/explore/data')
+sys.path.insert(1, '/path/to/data/dir') # replace with server home path to data
 from cat_builder import *
+from data_features import *
 from food_builder import *
 import psycopg2
 import datetime
@@ -60,7 +61,7 @@ class Command(BaseCommand):
 
         # B- Update food data
         print("2- Update food data:\n")
-        for elt in cat_list_test:
+        for elt in cat_list:
             food = FoodBuilder(elt)
             # 1- Wrangle and save data from Open Food Facts db
             food.launch_request()

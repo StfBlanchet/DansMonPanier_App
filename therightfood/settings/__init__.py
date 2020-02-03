@@ -13,8 +13,6 @@ SECRET_KEY = '!wa*gya13(a2#tip%cd8v_vb^_(a51f$+mpby4o&9g3y11n_6('
 
 DEBUG = True
 
-INTERNAL_IPS = ['127.0.0.1']
-
 ALLOWED_HOSTS = []
 
 INSTALLED_APPS = [
@@ -26,7 +24,6 @@ INSTALLED_APPS = [
     'django.contrib.messages',
     'django.contrib.staticfiles',
     'django.contrib.postgres',
-    'debug_toolbar',
 ]
 
 MIDDLEWARE = [
@@ -38,7 +35,6 @@ MIDDLEWARE = [
     'django.contrib.messages.middleware.MessageMiddleware',
     'django.middleware.clickjacking.XFrameOptionsMiddleware',
     'django.middleware.locale.LocaleMiddleware',
-    'debug_toolbar.middleware.DebugToolbarMiddleware',
 ]
 
 ROOT_URLCONF = 'therightfood.urls'
@@ -60,6 +56,8 @@ TEMPLATES = [
 ]
 
 WSGI_APPLICATION = 'therightfood.wsgi.application'
+
+# Database
 
 DATABASES = {
     'default': {
@@ -87,14 +85,12 @@ AUTH_PASSWORD_VALIDATORS = [
     },
 ]
 
+# Internationalization
 LANGUAGE_CODE = 'fr'
-
 TIME_ZONE = 'Europe/Paris'
-
 USE_I18N = True
-
 USE_L10N = True
-
 USE_TZ = True
 
+# Static files (CSS, JavaScript, Images)
 STATIC_URL = '/static/'

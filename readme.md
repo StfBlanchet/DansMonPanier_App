@@ -4,7 +4,7 @@
 # dansMonPanier
 
 * [Description](#description)
-* [User Journey](#user-journey)
+* [User journey](#user-journey)
 * [Data wrangling](#data-wrangling)
 * [Technical requirements](#technical-requirements)
 * [Status](#status)
@@ -37,6 +37,7 @@ When a product has already been selected by the user, the button “save” is n
 ### Sign in / up / out
 
 The user accesses the login page by clicking on the user icon in the top navbar to register or login, as appropriate. Whether or not she is a new user, she is greeted with a welcome message if all has gone well. Otherwise, an error message is displayed ("Incorrect credentials", "You must provide valid information to register"). When the user logs out, a good bye message appears.
+
 
 ## Data wrangling
 

@@ -4,31 +4,22 @@
 
   {% load static %}
 
-  <!-- Masthead -->
-  <header class="master">
-    <div class="container text-center">
-    <h1 class="text-uppercase text-white font-weight-bold">Mes favoris</h1>
-      </div>
-  </header>
 
   <!-- Favorites Section -->
-  <section class="page-section">
-    <div class="container">
-     <h2 class="text-center mt-0">Vous avez sélectionné :</h2>
-      <hr class="divider my-4">
-      <br>
-      <div class="card-columns">
+  <section class="page-section my-4">
+    <div class="container justify-content-center">
+      <ul class="list-unstyled row">
        {% for food in favorites %}
-          <div class="card">
-            <a href="{% url 'item' food.id %}">
+          <li class="list-inline-item my-0 p-3 col-md-6 col-lg-4">
+             <a href="{% url 'item' food.id %}">
               {% if food.image_url %}
               <img class="card-img-top" src="{{ food.image_url }}" alt="{{ food.name }}">
               {% else %}
-              <img class="card-img-top" src="{% static 'explore/img/bg-masthead.jpg' %}" alt="{{ food.name }}">
-            </a>
-            {% endif %}
+              <img class="card-img-top" src="{% static 'explore/img/empty_cart.jpg' %}" alt="{{ food.name }}">
+              {% endif %}
+             </a>
             <div class="card-body">
-              <h3 class="card-title h4 mid_purple"><a href="{% url 'item' food.id %}">{{ food.name }}</a></h3>
+              <h3 class="card-title h4 mt-2 mid_purple"><a href="{% url 'item' food.id %}">{{ food.name }}</a></h3>
               {% if food.brands %}
                 <p class="card-text">Marque : {{ food.brands }}</p>
               {% else %}
@@ -53,12 +44,16 @@
                 {% if food.nova %}
                   {% if food.nova == 1 %}
                   <img class="img-nova" src="{% static 'explore/off_icons/nova-group-1.svg' %}" alt="Groupe Nova {{ food.nova }}">
+                  <p class="text-small font-italic"> 1 : Aliments pas ou peu transformés</p>
                   {% elif food.nova == 2 %}
                   <img class="img-nova" src="{% static 'explore/off_icons/nova-group-2.svg' %}" alt="Groupe Nova {{ food.nova }}">
+                  <p class="text-x-small font-italic"> 2 : Ingrédients culinaires transformés</p>
                   {% elif food.nova == 3 %}
                   <img class="img-nova" src="{% static 'explore/off_icons/nova-group-3.svg' %}" alt="Groupe Nova {{ food.nova }}">
+                  <p class="text-x-small font-italic"> 3 : Aliments transformés</p>
                   {% elif food.nova == 4 %}
                   <img class="img-nova" src="{% static 'explore/off_icons/nova-group-4.svg' %}" alt="Groupe Nova {{ food.nova }}">
+                  <p class="text-x-small font-italic"> 4 : Produit et aliments ultra-transformés</p>
                   {% endif %}
                 {% endif %}
                 </li>
@@ -94,11 +89,20 @@
                 {% if food.fair_trade == 'True' %}
                 <li class="list-group-item">Commerce équitable</li>
                 {% endif %}
+                <li class="list-group-item p-0 m-0 text-center">
+                  <br>
+                   <form action="{% url 'remove_favorites' %}" method="post">
+                    {% csrf_token %}
+                   <button name="r" value="{{ food.id }}" type="submit" class="text-uppercase text-x-small btn btn-primary purple">
+                     <i class="fas fa-bookmark"></i>ôter de mes favoris</button>
+                   </form>
+                </li>
               </ul>
             </div>
-          </div>
+          </li>
         {% endfor %}
-        </div>
+        </ul>
       </div>
   </section>
+
 {% endblock %}

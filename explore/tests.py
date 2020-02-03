@@ -1,16 +1,14 @@
-#! /usr/bin/env python3
-# coding: utf-8
-
 """
 dansMonPanier app
 File to run tests.
 """
 
+
 from .views import *
 from .models import *
 from .forms import UserForm
 from datetime import datetime
-from django.contrib.auth.models import AnonymousUser, User
+from django.contrib.auth.models import User
 from django.test import RequestFactory, TestCase
 from django.urls import reverse
 
@@ -48,6 +46,14 @@ class SimpleViewTest(TestCase):
         response = self.client.get(reverse('my_favorites'))
         self.assertEqual(response.status_code, 302)
 
+    def test_save_favorites(self):
+        response = self.client.get(reverse('save_favorites'))
+        self.assertEqual(response.status_code, 302)
+
+    def test_remove_favorites(self):
+        response = self.client.get(reverse('remove_favorites'))
+        self.assertEqual(response.status_code, 302)
+
     def test_my_profile(self):
         response = self.client.get(reverse('my_profile'))
         self.assertEqual(response.status_code, 302)
@@ -71,6 +77,11 @@ class AppDataTestCase(TestCase):
             category='beurres'
         )
 
+        Category.objects.create(
+            id=2,
+            category='choux'
+        )
+
         Food.objects.create(
             id=0,
             category_group='pains, biscottes, céréales',
@@ -79,24 +90,24 @@ class AppDataTestCase(TestCase):
             name='Bread test',
             brands='Fake bread brand',
             stores='Carrefour',
-            bio='TRUE',
-            eco_packaging='TRUE',
-            fsc='FALSE',
-            utz='FALSE',
-            palm_oil_free='FALSE',
-            made_in_france='TRUE',
+            bio=True,
+            eco_packaging=True,
+            fsc=True,
+            utz=True,
+            palm_oil_free=True,
+            made_in_france=True,
             ingredients_text='blé, eau, sel...',
             additives=3,
             allergens_from_ingredients='',
             quantity=4,
             image_url='https://foo-foo.bar',
             packaging='papier',
-            french_ingredients='TRUE',
-            fair_trade='FALSE',
-            vegan='TRUE',
-            vegetarian='TRUE',
-            gluten_free='TRUE',
-            iplc='FALSE',
+            french_ingredients=True,
+            fair_trade=True,
+            vegan=True,
+            vegetarian=True,
+            gluten_free=True,
+            iplc=True,
             nova=3,
             nutrition_grade='b',
             energy=258,
@@ -117,24 +128,24 @@ class AppDataTestCase(TestCase):
             name='Butter test',
             brands='Fake butter brand',
             stores='Leclerc',
-            bio='TRUE',
-            eco_packaging='TRUE',
-            fsc='FALSE',
-            utz='FALSE',
-            palm_oil_free='TRUE',
-            made_in_france='TRUE',
+            bio=True,
+            eco_packaging=True,
+            fsc=True,
+            utz=True,
+            palm_oil_free=True,
+            made_in_france=True,
             ingredients_text='lait, eau, sel...',
             additives=3,
             allergens_from_ingredients='',
             quantity=4,
             image_url='https://foo-foo.bar',
             packaging='papier',
-            french_ingredients='TRUE',
-            fair_trade='FALSE',
-            vegan='FALSE',
-            vegetarian='FALSE',
-            gluten_free='TRUE',
-            iplc='FALSE',
+            french_ingredients=True,
+            fair_trade=True,
+            vegan=True,
+            vegetarian=True,
+            gluten_free=True,
+            iplc=True,
             nova=2,
             nutrition_grade='d',
             energy=788,
@@ -170,7 +181,7 @@ class AppDataTestCase(TestCase):
             'username': 'jeanpaul-dubuc@gmail.com',
             'password1': '$123a456Cv789p!',
             'password2': '$123a456Cv789p!',
-            'first_name': '(Je@anP@ul)'
+            'first_name': 'Je@anP@ul'
         }
         self.bad_user = {
             'email': 'toto@gmail.com',
@@ -223,7 +234,15 @@ class AppDataTestCase(TestCase):
         user_favorites = Favorite().ref_list(request)
         self.assertEqual(len(user_favorites), 1)
 
-    def test_auth_ok(self):
+    def test_new_user_1(self):
+        """
+        Test signin
+        for a valid user
+        """
+        response = self.client.post(reverse('signin'), data=self.new_user)
+        self.assertEqual(response.status_code, 302)
+
+    def test_new_user_2(self):
         """
         Test signin form and login
         for a valid user
@@ -237,8 +256,8 @@ class AppDataTestCase(TestCase):
         update_count = User.objects.count()
         self.assertEqual(update_count, initial_count + 1)
 
-        user = User.objects.get(username='jeanpaul-dubuc@gmail.com')
-        self.assertEqual(user.first_name, '(Je@anP@ul)')
+        user = User.objects.get(first_name='Je@anP@ul')
+        self.assertEqual(user.username, 'jeanpaul-dubuc@gmail.com')
 
         user_is_logged = self.client.login(username='jeanpaul-dubuc@gmail.com', password='$123a456Cv789p!')
         self.assertTrue(user_is_logged)
@@ -253,6 +272,14 @@ class AppDataTestCase(TestCase):
 
         user_is_logged = self.client.login(username='toto@gmail.com', password='1234')
         self.assertFalse(user_is_logged)
+
+    def test_auth_user_ok(self):
+        """
+        Test login
+        for a valid user
+        """
+        response = self.client.post(reverse('user_login'), data=self.new_user)
+        self.assertEqual(response.status_code, 200)
 
     def test_my_profile_auth(self):
         """
@@ -279,12 +306,11 @@ class AppDataTestCase(TestCase):
 
     def test_save_favorites_auth(self):
         """
-        Test the response of save_favorites
-        when the user is authenticated
+        Test save_favorites
+        response
         """
         product = Food.objects.get(pk=1)
-        user = User.objects.get(pk=0)
-        response = self.client.post(reverse('save_favorites'), {'products': product, 'user': user})
+        response = self.client.post(reverse('save_favorites'), {'products': product, 'user': self.user})
         self.assertEqual(response.status_code, 302)
 
     def test_favorites_count(self):
@@ -293,13 +319,83 @@ class AppDataTestCase(TestCase):
         is incremented when a
         product was added
         """
-        request = self.client.get(reverse('save_favorites'))
+        request = self.factory.get(reverse('save_favorites'))
         request.user = self.user
         initial_count = Favorite.objects.count()
         new = Food.objects.get(pk=1)
-        favorite = Favorite()
-        favorite.products = new
-        favorite.user = self.user
-        favorite.save()
+        Favorite(products=new, user=request.user).save()
         update_count = Favorite.objects.count()
         self.assertEqual(update_count, initial_count + 1)
+
+    def test_remove_favorites_auth(self):
+        request = self.factory.get(reverse('my_favorites'))
+        request.user = self.user
+        favorites = Food.objects.filter(favorite__user=request.user)
+        Favorite.objects.filter(Q(products=1) & Q(user=request.user)).delete()
+        self.assertIs(len(favorites), 1)
+
+    def test_results_nutrition(self):
+        request = self.factory.get('/results/?q=beurre&ranking=nutrition&filtering=none')
+        request.user = self.user
+        response = results(request)
+        self.assertEqual(response.status_code, 200)
+
+    def test_results_nova(self):
+        request = self.factory.get('/results/?q=beurre&ranking=nova&filtering=none')
+        data = Food.objects.filter(category_group__unaccent__icontains='beurre')
+        request.user = self.user
+        response = results(request)
+        self.assertEqual(response.status_code, 200)
+        self.assertIs(len(data), 1)
+
+    def test_results_nova_bio(self):
+        request = self.factory.get('/results/?q=beurre&ranking=nova&filtering=bio')
+        data = Food.objects.filter(category_group__unaccent__icontains='beurre')
+        request.user = self.user
+        response = results(request)
+        self.assertEqual(response.status_code, 200)
+        self.assertIs(len(data), 1)
+
+    def test_results_nova_fair(self):
+        request = self.factory.get('/results/?q=pain&ranking=nova&filtering=fair-trade')
+        data = Food.objects.filter(category_group__unaccent__icontains='pain')
+        request.user = self.user
+        response = results(request)
+        self.assertEqual(response.status_code, 200)
+        self.assertIs(len(data), 1)
+
+    def test_results_nutrition_france(self):
+        request = self.factory.get('/results/?q=pain&ranking=nutrition&filtering=made-in-france')
+        data = Food.objects.filter(category_group__unaccent__icontains='pain')
+        request.user = self.user
+        response = results(request)
+        self.assertEqual(response.status_code, 200)
+        self.assertIs(len(data), 1)
+
+    def test_results_nutrition_palm(self):
+        request = self.factory.get('/results/?q=pain&ranking=nutrition&filtering=palm-oil-free')
+        data = Food.objects.filter(category_group__unaccent__icontains='pain')
+        request.user = self.user
+        response = results(request)
+        self.assertEqual(response.status_code, 200)
+        self.assertIs(len(data), 1)
+
+    def test_results_nutrition_fsc(self):
+        request = self.factory.get('/results/?q=pain&ranking=nutrition&filtering=fsc')
+        data = Food.objects.filter(category_group__unaccent__icontains='pain')
+        request.user = self.user
+        response = results(request)
+        self.assertEqual(response.status_code, 200)
+        self.assertIs(len(data), 1)
+
+    def test_results_not_in_cat_1(self):
+        request = self.factory.get('/results/?q=chou&ranking=nutrition&filtering=none')
+        request.user = self.user
+        data = Food.objects.filter(category_group__unaccent__icontains='chou')
+        self.assertIs(len(data), 0)
+
+    def test_results_not_in_cat_2(self):
+        request = self.factory.get('/results/?q=gateau+au+chocolat&ranking=nutrition&filtering=none')
+        request.user = self.user
+        data = Food.objects.filter(category_group__unaccent__icontains='gateau au chocolat')
+        self.assertIs(len(data), 0)

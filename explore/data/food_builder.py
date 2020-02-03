@@ -2,7 +2,6 @@
 dansMonPanier Data Builder
 """
 
-
 import pandas as pd
 from unidecode import unidecode
 import re
@@ -10,7 +9,7 @@ from math import *
 import requests
 import datetime
 import sys
-sys.path.insert(1, '/home/dev/monpanier/explore/data')
+sys.path.insert(1, '/path/to/data/dir') # replace with server home path to data
 from data_features import *
 
 
@@ -28,6 +27,7 @@ class FoodBuilder:
         # get the number of items in the target category
         self.row = self.df[self.df.category == self.cat].reset_index(drop=True)
         self.items = self.row.iat[0, 1]
+        print(self.cat, ": ", self.items, "items")
         self.pages = []
         self.clean_items = int()
         self.csv_path = str()
@@ -177,3 +177,4 @@ class FoodBuilder:
         csv_name = self.uris_cat.replace("'", "-") + '_dataset.csv'
         self.csv_path = os.path.join(my_path, "../data/", csv_name)
         self.res.to_csv(self.csv_path, index=False, sep=';', header=True, columns=vars)
+        

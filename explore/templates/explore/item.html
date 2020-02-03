@@ -1,41 +1,52 @@
 {% extends 'explore/layout.html' %}
 
-{% block content %}
-
   {% load static %}
 
-  <!-- Masthead -->
-  <header class="food_item">
+  <!-- Item header -->
+  {% block header %}
+
+  {% for item in features %}
+
     <div class="container text-center">
-      {% for item in features %}
-    <h1 class="h2 mt-0 pt-0 text-uppercase text-white font-weight-bold">{{ item.name }}</h1>
+    <h1 class="h2 text-uppercase text-white font-weight-bold">{{ item.name }}</h1>
           {% if item.brands %}
-          <p class="text-white mt-0 mb-5">Marque : {{ item.brands }}</p>
+          <p class="text-white text-center mt-0 mb-5">Marque : {{ item.brands }}</p>
           {% else %}
-          <p class="text-white mt-0 mb-5">Marque : non précisée</p>
+          <p class="text-white text-center mt-0 mb-5">Marque : non précisée</p>
           {% endif %}
       {% if user.is_authenticated %}
           {% if not item.id in registered %}
             <form action="{% url 'save_favorites' %}" method="post">
             {% csrf_token %}
-            <button name="p" value="{{ item.id }}" type="submit" class="green btn btn-primary">
-              <i class="far fa-save"></i>Ajouter à mes favoris</button>
+            <button name="p" value="{{ item.id }}" type="submit" class="text-uppercase text-x-small btn btn-primary green">
+              <i class="far fa-save"></i>ajouter à mes favoris</button>
             </form>
           {% else %}
-            <p class="green btn btn-primary"><i class="fas fa-bookmark"></i>favoris</p>
+           <form action="{% url 'remove_favorites' %}" method="post">
+            {% csrf_token %}
+           <button name="r" value="{{ item.id }}" type="submit" class="text-uppercase text-x-small btn btn-primary purple">
+             <i class="fas fa-bookmark"></i>ôter de mes favoris</button>
+           </form>
           {% endif %}
           {% else %}
             <form action="{% url 'save_favorites' %}" method="post">
             {% csrf_token %}
-            <button name="p" value="{{ item.id }}" type="submit" class="green btn btn-primary">
-              <i class="far fa-save"></i>Ajouter à mes favoris</button>
+            <button name="p" value="{{ item.id }}" type="submit" class="text-uppercase text-x-small btn btn-primary green">
+              <i class="far fa-save"></i>ajouter à mes favoris</button>
             </form>
         {% endif %}
       </div>
-  </header>
+
+  {% endfor %}
+
+  {% endblock %}
 
   <!-- Item Section -->
-  <section class="page-section">
+  {% block content %}
+
+  {% for item in features %}
+
+  <section class="page-section my-4">
     <div class="container">
       <div class="row">
         <div class="col-lg-4 col-md-4">
@@ -185,7 +196,9 @@
         </div>
       </div>
       </div>
-        {% endfor %}
     </div>
   </section>
-{% endblock %}
+
+  {% endfor %}
+
+  {% endblock %}

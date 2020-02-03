@@ -83,7 +83,6 @@ vars = [
 my_path = os.path.abspath(os.path.dirname(__file__))
 off_cat = os.path.join(my_path, "../data/off_cat.csv")
 off_cat_pg = os.path.join(my_path, "../data/off_cat_pg.csv")
-cat_to_load = os.path.join(my_path, "../data/cat_to_load.txt")
 
 # Manage food facts import
 

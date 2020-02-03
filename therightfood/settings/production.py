@@ -1,4 +1,3 @@
-
 """
 Django prod settings 
 for therightfood project
@@ -38,4 +37,3 @@ SECURE_BROWSER_XSS_FILTER = True
 SECURE_CONTENT_TYPE_NOSNIFF = True  
 
 # SECURE_SSL_REDIRECT = True  # activate once SSL is set up
-

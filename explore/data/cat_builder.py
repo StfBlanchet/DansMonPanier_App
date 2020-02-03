@@ -5,7 +5,7 @@ dansMonPanier category builder
 import requests
 import pandas as pd
 import sys
-sys.path.insert(1, '/home/dev/monpanier/explore/data')
+sys.path.insert(1, '/path/to/data/dir') # replace with server home path to data
 from data_features import *
 
 

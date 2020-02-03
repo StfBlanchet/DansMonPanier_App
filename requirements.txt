@@ -3,7 +3,9 @@ chardet==3.0.4
 dj-database-url==0.5.0
 Django==2.2.9
 django-debug-toolbar==2.1
+django-environ==0.4.5
 django-postgres-copy==2.4.2
+gunicorn==20.0.4
 idna==2.8
 lxml==4.4.2
 numpy==1.17.4
@@ -16,3 +18,4 @@ six==1.13.0
 sqlparse==0.3.0
 Unidecode==1.1.1
 urllib3==1.25.7
+coverage==5.0.3
