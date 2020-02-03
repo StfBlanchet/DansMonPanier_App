@@ -52,7 +52,6 @@ a:hover {
   text-decoration: none;
 }
 
-
 footer {
   background: #512e5f;
 }
@@ -252,10 +251,6 @@ h1, h2, h3, h4, h5, h6,
   display: inline;
 }
 
-.green {
-  background: #2980b9;
-}
-
 .btn-primary:hover {
   color: #fff;
   background-color: #1f618d;
@@ -327,6 +322,18 @@ h1, h2, h3, h4, h5, h6,
   font-size: 0.875rem;
   line-height: 1.5;
   border-radius: 0.2rem;
+}
+
+.border-light {
+  border: 1px solid #884ea0;
+}
+
+.green {
+  background: #2980b9;
+}
+
+.purple {
+  background: #76448a;
 }
 
 /* DROPDOWN */
