@@ -4,39 +4,49 @@
 # dansMonPanier
 
 * [Description](#description)
+* [Releases](#releases)
 * [User journey](#user-journey)
 * [Data wrangling](#data-wrangling)
 * [Technical requirements](#technical-requirements)
+* [Test coverage](#test-coverage)
 * [Status](#status)
 * [Contributing](#contributing)
 * [Authors](#authors)
 * [License](#license) 
 * [Appendix](#appendix)
 
+
 ## Description
 
 dansMonPanier is a web application based on <a href="https://fr.openfoodfacts.org">Open Food Facts</a> data, aimed at leveraging its value regarding nutritional but also ethical and ecological concerns.
-
-The first release provides a list of products ordered by nutrition grade or by nova score, depending on the chosen ranking and the targeted category of food.
 
 In line with nowadays growing willing to consume in a healthy and responsible way, this app allows the user to identify the products that best meet her requirements.
 
 Intended for French users, the language communication of dansMonPanier is French. 
 
 
+## Releases
+
+The first release provided a list of products ordered by nutrition grade or by NOVA group, depending on the chosen ranking and the targeted category of food.
+
+Since then, have been added multi-criteria classification and filtering of search results in the database and a feature to allow the user to remove products from her favorites.
+
+Also the top navigation bar was replaced by a side navigation bar so to improve user experience and avoid conflicts with the virtual keyboard on mobiles.
+
+
 ## User journey
 
 ### Search & Save
 
-The user enters a food name in the search field (from the home page or from the top navbar) and chooses ranking and filtering criteria, according to her interest. If there is no corresponding category in the database, a message informs the user. Otherwise, a results page displays 18 products belonging to the targeted category, each being presented with a set of 12 features (e.g. the presence of allergens or palm oil, the origin of the ingredients, whether it is “bio” or not, etc. - see appendix) appearing when they are true or available. A button allows the user to save a product as a favorite. If she is not logged, a message prompts her to do so or to create an account. 
+The user enters a food name in the search field (from the home page or from the navbar) and chooses ranking (by nutrition grade or NOVA group) and filtering criteria (e.g. "bio", "fair trade", ...), according to her interest. If there is no corresponding category in the database, a message informs the user. Otherwise, a results page displays 18 products belonging to the targeted category, each being presented with a set of 12 features (e.g. the presence of allergens or palm oil, the origin of the ingredients, whether it is “bio” or not, etc. - see appendix) appearing when they are true or available. A button allows the user to save a product as a favorite. If she is not logged, a message prompts her to do so or to create an account. 
 
-The user can learn more about a product by clicking on the image of the product (which is directly loaded from Open Food Facts database) or on the title of the card. The product page contains the 12 criteria mentioned above, accompanied by information such as its nutritional formula per 100 g., composition, packaging, quantity, places of sale … Again, the user can add a product to her favorites if she is already connected. Each time a product is registered, a message confirms the operation.
+The user can learn more about a product by clicking on the image of the product (which is directly loaded from Open Food Facts database) or on the title of the card. The product page contains 12 criteria accompanied by information such as its nutritional formula per 100 g., composition, packaging, quantity, places of sale … Again, the user can add a product to her favorites if she is already connected. Each time a product is registered, a message confirms the operation.
 
-When a product has already been selected by the user, the button “save” is not anymore active in any page but replaced by the mention “in my favorites”, which prevents duplicates. The user can retrieve all its favorites by clicking on the carrot icon in the top navbar (which appears only if the user is logged). If she has not saved any product yet, a message invites her to do so. The favorites page follows the same template as the results page.
+When a product has already been selected by the user, the button “save” is not anymore active in any page but replaced by the mention “remove from my favorites”, which prevents duplicates. The user can retrieve all its favorites by clicking on the carrot icon in the top navbar (which appears only if the user is logged). If she has not saved any product yet, a message invites her to do so. The favorites page follows the same template as the results page.
 
 ### Sign in / up / out
 
-The user accesses the login page by clicking on the user icon in the top navbar to register or login, as appropriate. Whether or not she is a new user, she is greeted with a welcome message if all has gone well. Otherwise, an error message is displayed ("Incorrect credentials", "You must provide valid information to register"). When the user logs out, a good bye message appears.
+The user accesses the login page by clicking on the user icon in the navbar to register or login, as appropriate. Whether or not she is a new user, she is greeted with a welcome message if all has gone well. Otherwise, an error message is displayed ("Incorrect credentials", "You must provide valid information to register"). When the user logs out, a good bye message appears.
 
 
 ## Data wrangling
@@ -49,7 +59,7 @@ Two specific modules were built to achieve data wrangling and collection automat
 
 __cat_builder.py__ gets and stores in a csv file the food categories currently available in OFF database. It includes cleaning tasks such as dropping NaN, duplicated field labels and poor categories (i.e. containing less than 100 products). It also ensures the writing of the banner image paths for every category ;
 
-__data_builder.py__ performs various operations on data to manage their collection and refinement:
+__food_builder.py__ performs various operations on data to manage their collection and refinement:
 <ul>
 <li>automate URI generation based on the components of Open Food Facts Read/Search API and the data collected by the cat_loader module. The latter provides the total of products per food category and so enables to determine the number of pages (1000 items per page) to be loaded.</li>
 <li>automate sending http requests and filter the data to be collected. Only some specific fields are taken into account (see appendix and details on the API/Read/Product page).</li>
@@ -75,6 +85,114 @@ One can use the package manager [pip](https://pip.pypa.io/en/stable/) to install
 ```bash
 pip install -r requirements.txt
 ```
+
+
+## Test coverage
+
+<table class="index">
+        <thead>
+            <tr class="tablehead" title="Click to sort">
+                <th class="name left headerSortDown shortkey_n">Module</th>
+                <th class="shortkey_s">statements</th>
+                <th class="shortkey_m">missing</th>
+                <th class="shortkey_x">excluded</th>
+                <th class="right shortkey_c">coverage</th>
+            </tr>
+        </thead>
+        <tfoot>
+            <tr class="total">
+                <td class="name left"><b>Total</b></td>
+                <td>417</td>
+                <td>22</td>
+                <td>0</td>
+                <td class="right" data-ratio="395 417"><b>95%</b></td>
+            </tr>
+        </tfoot>
+        <tbody>
+            <tr class="file">
+                <td class="name left"><a href="#">explore/__init__.py</a></td>
+                <td>0</td>
+                <td>0</td>
+                <td>0</td>
+                <td class="right" data-ratio="0 0">100%</td>
+            </tr>
+            <tr class="file">
+                <td class="name left"><a href="#">explore/apps.py</a></td>
+                <td>3</td>
+                <td>0</td>
+                <td>0</td>
+                <td class="right" data-ratio="3 3">100%</td>
+            </tr>
+            <tr class="file">
+                <td class="name left"><a href="#">explore/forms.py</a></td>
+                <td>10</td>
+                <td>0</td>
+                <td>0</td>
+                <td class="right" data-ratio="10 10">100%</td>
+            </tr>
+            <tr class="file">
+                <td class="name left"><a href="#">explore/migrations/0001_initial.py</a></td>
+                <td>7</td>
+                <td>0</td>
+                <td>0</td>
+                <td class="right" data-ratio="7 7">100%</td>
+            </tr>
+            <tr class="file">
+                <td class="name left"><a href="#">explore/migrations/0002_auto_20200202_1454.py</a></td>
+                <td>5</td>
+                <td>0</td>
+                <td>0</td>
+                <td class="right" data-ratio="5 5">100%</td>
+            </tr>
+            <tr class="file">
+                <td class="name left"><a href="#">explore/migrations/__init__.py</a></td>
+                <td>0</td>
+                <td>0</td>
+                <td>0</td>
+                <td class="right" data-ratio="0 0">100%</td>
+            </tr>
+            <tr class="file">
+                <td class="name left"><a href="#">explore/models.py</a></td>
+                <td>54</td>
+                <td>0</td>
+                <td>0</td>
+                <td class="right" data-ratio="54 54">100%</td>
+            </tr>
+            <tr class="file">
+                <td class="name left"><a href="#">explore/process.py</a></td>
+                <td>12</td>
+                <td>2</td>
+                <td>0</td>
+                <td class="right" data-ratio="10 12">83%</td>
+            </tr>
+            <tr class="file">
+                <td class="name left"><a href="#">explore/tests.py</a></td>
+                <td>186</td>
+                <td>0</td>
+                <td>0</td>
+                <td class="right" data-ratio="186 186">100%</td>
+            </tr>
+            <tr class="file">
+                <td class="name left"><a href="#">explore/urls.py</a></td>
+                <td>3</td>
+                <td>0</td>
+                <td>0</td>
+                <td class="right" data-ratio="3 3">100%</td>
+            </tr>
+            <tr class="file">
+                <td class="name left"><a href="#">explore/views.py</a></td>
+                <td>137</td>
+                <td>20</td>
+                <td>0</td>
+                <td class="right" data-ratio="117 137">85%</td>
+            </tr>
+        </tbody>
+    </table>
+<p>
+    <a class="nav" href="https://coverage.readthedocs.io">coverage.py v5.0.3</a>,
+    created at 2020-02-03 12:16
+</p>
+
 
 ## Status
 
