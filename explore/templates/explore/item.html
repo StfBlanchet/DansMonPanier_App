@@ -10,9 +10,9 @@
     <div class="container text-center">
     <h1 class="h2 text-uppercase text-white font-weight-bold">{{ item.name }}</h1>
           {% if item.brands %}
-          <p class="text-white mt-0 mb-5">Marque : {{ item.brands }}</p>
+          <p class="text-white text-center mt-0 mb-5">Marque : {{ item.brands }}</p>
           {% else %}
-          <p class="text-white mt-0 mb-5">Marque : non précisée</p>
+          <p class="text-white text-center mt-0 mb-5">Marque : non précisée</p>
           {% endif %}
       {% if user.is_authenticated %}
           {% if not item.id in registered %}
@@ -24,7 +24,7 @@
           {% else %}
            <form action="{% url 'remove_favorites' %}" method="post">
             {% csrf_token %}
-           <button name="r" value="{{ item.id }}" type="submit" class="text-uppercase text-x-small btn btn-primary green">
+           <button name="r" value="{{ item.id }}" type="submit" class="text-uppercase text-x-small btn btn-primary purple">
              <i class="fas fa-bookmark"></i>ôter de mes favoris</button>
            </form>
           {% endif %}
