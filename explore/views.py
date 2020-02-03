@@ -123,23 +123,16 @@ def my_favorites(request):
     Function to display
     the user's favorites.
     """
-    header = 'master'
-    header_ = 'masthead'
-    title = 'Mes favoris'
-    header_ = 'masthead'
-    title_ = 'Pas encore de favoris ? Lâchez-vous !'
+    header = ['master', 'masthead']
+    title = ['Mes favoris', 'Pas encore de favoris ?']
     if request.user.is_authenticated:
         favorites = Food.objects.filter(favorite__user=request.user)
         if len(favorites) > 0:
-            context = {'favorites': favorites, 'class': header, 'title': title}
-            temp = 'explore/favorites.html'
+            context = {'favorites': favorites, 'class': header[0], 'title': title[0]}
+            return render(request, 'explore/favorites.html', context)
         else:
-            context = {'class': header_, 'title': title_}
-            temp = 'explore/index.html'
-        return render(request, temp, context)
-            return render(request, 'explore/index.html', {'class': header_, 'title': title_})
-    else:
-        return HttpResponseRedirect(reverse('index'))
+            context = {'class': header[1], 'title': title[1]}
+            return render(request, 'explore/index.html', context)
 
 
 def remove_favorites(request):
