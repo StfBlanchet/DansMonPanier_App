@@ -101,7 +101,7 @@
                   {% else %}
                    <form action="{% url 'remove_favorites' %}" method="post">
                     {% csrf_token %}
-                   <button name="r" value="{{ food.id }}" type="submit" class="text-uppercase text-x-small btn btn-primary">
+                   <button name="r" value="{{ food.id }}" type="submit" class="text-uppercase text-x-small btn btn-primary purple">
                      <i class="fas fa-bookmark"></i>ôter de mes favoris</button>
                    </form>
                     {% endif %}
