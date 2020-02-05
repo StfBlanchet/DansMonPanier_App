@@ -10,21 +10,31 @@
     <div class="container text-center">
     <h1 class="h2 text-uppercase text-white font-weight-bold">{{ item.name }}</h1>
           {% if item.brands %}
-          <p class="text-white mt-0 mb-5">Marque : {{ item.brands }}</p>
+          <p class="text-white text-center mt-0 mb-5">Marque : {{ item.brands }}</p>
           {% else %}
-          <p class="text-white mt-0 mb-5">Marque : non précisée</p>
+          <p class="text-white text-center mt-0 mb-5">Marque : non précisée</p>
           {% endif %}
       {% if user.is_authenticated %}
           {% if not item.id in registered %}
             <form action="{% url 'save_favorites' %}" method="post">
             {% csrf_token %}
-            <button name="p" value="{{ item.id }}" type="submit" class="text-uppercase text-x-small btn btn-primary green">
-              <i class="far fa-save"></i>ajouter à mes favoris</button>
+            <button type="button" class="text-uppercase text-x-small btn btn-primary green" data-toggle="dropdown">
+              <i class="fas fa-bookmark fa-lg deep_purple"></i>ajouter à mes favoris</button>
+              <div class="dropdown-menu pb-1 mt-1 px-0" style="width:21%">
+                  <label class="d-block"><input class="ml-3 mr-2" type="radio" name="m" value="tout_repas" checked>tout repas</label>
+                  <label class="d-block"><input class="ml-3 mr-2" type="radio" name="m" value="petit_dejeuner">petit-déjeuner</label>
+                  <label class="d-block"><input class="ml-3 mr-2" type="radio" name="m" value="dejeuner">déjeuner</label>
+                  <label class="d-block"><input class="ml-3 mr-2" type="radio" name="m" value="gouter">goûter</label>
+                  <label class="d-block"><input class="ml-3 mr-2" type="radio" name="m" value="aperitif">apéritif</label>
+                  <label class="d-block"><input class="ml-3 mr-2" type="radio" name="m" value="diner">dîner</label>
+              <hr class="mb-1">
+                <button name="p" value="{{ item.id }}" class="btn text-uppercase text-white text-x-small" type="submit">ajouter&nbsp;&nbsp;<i class="fas fa-bookmark fa-sm deep_purple"></i></button>
+              </div>
             </form>
           {% else %}
            <form action="{% url 'remove_favorites' %}" method="post">
             {% csrf_token %}
-           <button name="r" value="{{ item.id }}" type="submit" class="text-uppercase text-x-small btn btn-primary green">
+           <button name="r" value="{{ item.id }}" type="submit" class="text-uppercase text-x-small btn btn-primary purple">
              <i class="fas fa-bookmark"></i>ôter de mes favoris</button>
            </form>
           {% endif %}

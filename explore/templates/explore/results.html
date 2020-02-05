@@ -27,7 +27,7 @@
               {% endif %}
               <br>
               <ul class="list-group list-group-flush">
-                <li style="border:none" class="py-0 list-group-item">
+                <li class="py-0 list-group-item border-0">
                 {% if food.nutrition_grade %}
                   {% if food.nutrition_grade == 'a' %}
                   <img class="img-score" src="{% static 'explore/off_icons/nutriscore-a.svg' %}" alt="Score nutritionnel {{ food.nutrition_grade }}">
@@ -92,26 +92,18 @@
                 <li class="list-group-item p-0 m-0 text-center">
                   <br>
                 {% if user.is_authenticated %}
-                  {% if not food.id in registered %}
-                    <form action="{% url 'save_favorites' %}" method="post">
-                    {% csrf_token %}
-                      <button name="p" value="{{ food.id }}" type="submit" class="text-uppercase text-x-small btn btn-primary green">
-                      <i class="far fa-save"></i>ajouter à mes favoris</button>
-                    </form>
-                  {% else %}
-                   <form action="{% url 'remove_favorites' %}" method="post">
-                    {% csrf_token %}
-                   <button name="r" value="{{ food.id }}" type="submit" class="text-uppercase text-x-small btn btn-primary">
-                     <i class="fas fa-bookmark"></i>ôter de mes favoris</button>
-                   </form>
-                    {% endif %}
-                  {% else %}
-                    <form action="{% url 'save_favorites' %}" method="post">
-                    {% csrf_token %}
-                      <button name="p" value="{{ food.id }}" type="submit" class="text-uppercase text-x-small btn btn-primary btn btn-primary green">
-                      <i class="far fa-save"></i>ajouter à mes favoris</button>
-                    </form>
+                  {% if food.id in registered %}
+                  <a href="{% url 'my_favorites' %}">
+                    <button class="text-uppercase text-x-small btn btn-primary purple">
+                     <i class="fas fa-bookmark"></i>dans mes favoris</button>
+                  </a>
+                {% else %}
+                  <a href="{% url 'item' food.id %}">
+                    <button class="text-uppercase text-x-small btn btn-primary green">
+                      <i class="fab fa-lg fa-readme"></i>consulter</button>
+                  </a>
                   {% endif %}
+                {% endif %}
                 </li>
               </ul>
             </div>

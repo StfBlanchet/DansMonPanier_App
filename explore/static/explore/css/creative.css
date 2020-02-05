@@ -1,15 +1,4 @@
-/*! DansMonPanier! CSS THEME CUSTOMIZATION
- *
- * Start Bootstrap - Creative v5.1.8 (https://startbootstrap.com/template-overviews/creative)
- * Copyright 2013-2019 Start Bootstrap
- * Licensed under MIT (https://github.com/BlackrockDigital/startbootstrap-creative/blob/master/LICENSE)
- */
-/*!
- * Bootstrap v4.3.1 (https://getbootstrap.com/)
- * Copyright 2011-2019 The Bootstrap Authors
- * Copyright 2011-2019 Twitter, Inc.
- * Licensed under MIT (https://github.com/twbs/bootstrap/blob/master/LICENSE)
- */
+/*! DansMonPanier! CSS THEME CUSTOMIZATION */
 
 
 body,
@@ -28,7 +17,7 @@ html {
 body {
   margin: 0;
   font-family: 'Quicksand', sans-serif;
-  font-size: 0.85rem;
+  font-size: 0.95rem;
   font-weight: 400;
   line-height: 1.5;
   color: #212529;
@@ -63,9 +52,12 @@ a:hover {
   text-decoration: none;
 }
 
-
 footer {
   background: #512e5f;
+  position: relative;
+  bottom: 0;
+  left: 0;
+  width: 100%;
 }
 
 footer a {
@@ -78,6 +70,11 @@ footer a:hover {
 
 p {
   text-align: justify;
+}
+
+.page-section {
+  padding: 1rem 0;
+  min-height: 100% !important;
 }
 
 .deep_purple {
@@ -229,12 +226,11 @@ h1, h2, h3, h4, h5, h6,
 .form-control::placeholder {
   color: #512e5f;
   opacity: 1;
-  font-size: 0.8rem;
+  font-size: 0.85rem;
 }
 
-.form-control:disabled, .form-control[readonly] {
-  background-color: #e9ecef;
-  opacity: 1;
+input {
+  border: 1px solid rgba(0, 0, 0, 0.125);
 }
 
 .btn {
@@ -261,10 +257,6 @@ h1, h2, h3, h4, h5, h6,
   background-color: #512e5f;
   border: none;
   display: inline;
-}
-
-.green {
-  background: #2980b9;
 }
 
 .btn-primary:hover {
@@ -340,25 +332,36 @@ h1, h2, h3, h4, h5, h6,
   border-radius: 0.2rem;
 }
 
-/* DROPDOWN */
+.border-light {
+  border: 1px solid #884ea0;
+}
+
+.green {
+  background: #2980b9;
+}
+
+.purple {
+  background: #76448a;
+}
+
+/* DROPDOWN MENU */
 
 .dropdown-menu {
   color: #fff;
   background: #1f618d;
   font-size: 0.85rem;
-  border: none;
   position: absolute;
   top: 100%;
   left: 0;
   z-index: 1000;
   display: none;
-  float: left;
-  min-width: 72.5%;
-  padding: 0.5rem 0;
-  margin-bottom: -1.75rem;
+  width: 75%;
+  padding: 0.5rem;
+  margin-top: 0;
   text-align: left;
   list-style: none;
   background-clip: padding-box;
+  border: none;
   border-radius: 0.25rem;
 }
 
@@ -475,15 +478,17 @@ h1, h2, h3, h4, h5, h6,
 }
 
 .alert-info {
-  height: 100%;
+  min-height: 100% !important;
   color: #fff;
   font-size: 0.9rem;
   background-color: #512e5f;
-  padding-top: 40%;
   opacity: 0.9;
-  border: none;
+  border-radius: 0;
   text-align: center;
-  z-index: 2;
+  padding-top: 45%;
+  padding-left: 1rem;
+  padding-right: 1rem;
+  z-index: 1000;
 }
 
 .alert-info a:hover {
@@ -570,7 +575,7 @@ button.close {
 }
 
 .text-x-small {
-  font-size: 0.7rem;
+  font-size: 0.75rem;
 }
 
 .text-monospace {
@@ -653,8 +658,8 @@ button.close {
 
 .menu-toggle {
   position: fixed;
-  right: 1.5rem;
-  top: 1.5rem;
+  right: 15px;
+  top: 15px;
   width: 2.5rem;
   height: 2.5rem;
   text-align: center;
@@ -696,7 +701,7 @@ header {
 }
 
 header.masthead {
-  height: 100%;
+  min-height: 100% !important;
   background: linear-gradient(to top, rgba(31, 97, 141, 0.7) 35%, rgba(31, 97, 141, 0.1) 100%), url("../img/bg-masthead.jpg");
   background-position: center;
   background-repeat: no-repeat;
@@ -705,7 +710,7 @@ header.masthead {
 }
 
 header.masthead h1 {
-  margin-top: 27%;
+  margin-top: 20%;
 }
 
 .master {

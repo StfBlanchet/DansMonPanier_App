@@ -18,12 +18,13 @@ class Process:
     def __init__(self):
         self.q = str()
 
-    def pluralize(self, raw_query):
+    def formatting(self, raw_query):
         """
         Put the main entity in the plural
         if not the case
         """
         self.q = unidecode(raw_query).split()
+        self.q[0] = self.q[0].capitalize()
         if not self.q[0].endswith('s') and not self.q[0].endswith('x') and not self.q[0].endswith('au'):
             self.q[0] = self.q[0] + 's'
         elif self.q[0].endswith('au'):
