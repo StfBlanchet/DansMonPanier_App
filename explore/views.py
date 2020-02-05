@@ -20,9 +20,7 @@ def index(request):
     """
     Function to return the home page.
     """
-    header = 'masthead'
-    title = 'Je sais ce que je mange !'
-    return render(request, 'explore/index.html', {'class': header, 'title': title})
+    return render(request, 'explore/index.html', {'class': 'masthead', 'title': 'Je sais ce que je mange !'})
 
 
 def results(request):
@@ -30,22 +28,22 @@ def results(request):
     Function to return search results
     according to the user query.
     """
-    header = 'master'
-    title = 'Faites le bon choix !'
     raw_query = request.GET.get('q')
-    rq = raw_query.split()
+    # Format user query
+    q = Process().formatting(raw_query)
+    rq = q.split()
     if len(rq) == 0 or len(rq[0]) < 3:
         # prevent empty query
         messages.info(request, 'Veuillez saisir un aliment.')
         return HttpResponseRedirect(request.META.get('HTTP_REFERER', '/'))
     else:
-        # Remove accents and pluralize
-        q = Process().pluralize(raw_query)
         # Query the complete expression in category_group field
-        dataset = Food.objects.filter(category_group__unaccent__icontains=q)
-        if not dataset:
-            # Query the first two words only in category_group field
-            dataset = Food.objects.filter(category_group__unaccent__startswith=q[:1])
+        dataset = Food.objects.filter(category_group__unaccent__contains=q)
+        if len(dataset) < 20:
+            # Query the first two words in case of long query
+            dataset = Food.objects.filter(
+                Q(category_group__unaccent__contains=q) | Q(name__unaccent__contains=q.title())
+            )
         # Rank results
         ranking = request.GET.get('ranking')
         results = dataset
@@ -76,12 +74,12 @@ def results(request):
             # filter results by fsc criteria
             data = results.filter(fsc=True)[:100]
         if data:
-            context = {'results': data, 'class': header, 'title': title}
+            context = {'results': data, 'class': 'master', 'title': 'Faites le bon choix !'}
             if request.user.is_authenticated:
                 # check the user favorite list
                 # so to prevent duplicates
                 registered = Favorite().ref_list(request)
-                context = {'registered': registered, 'results': data, 'class': header, 'title': title}
+                context = {'registered': registered, 'results': data, 'class': 'master', 'title': 'Faites le bon choix !'}
             return render(request, 'explore/results.html', context)
         else:
             messages.info(request, 'Aucun résultat ne correspond à votre recherche.')
@@ -93,12 +91,11 @@ def item(request, id):
     Function to return the features
     of a targeted product.
     """
-    header = 'food_item'
     features = Food.objects.filter(id=id)
-    context = {'features': features, 'class': header}
+    context = {'features': features, 'class': 'food_item'}
     if request.user.is_authenticated:
         registered = Favorite().ref_list(request)
-        context = {'features': features, 'class': header, 'registered': registered}
+        context = {'features': features, 'class': 'food_item', 'registered': registered}
     return render(request, 'explore/item.html', context)
 
 
@@ -109,8 +106,9 @@ def save_favorites(request):
     """
     if request.user.is_authenticated:
         p = request.POST.get('p')
+        m = request.POST.get('m')
         product = Food.objects.get(pk=p)
-        Favorite(products=product, user=request.user).save()
+        Favorite(products=product, user=request.user, meal=m).save()
         msg = 'Produit enregistré !'
     else:
         msg = mark_safe('<a href="/signin"><u>Connectez-vous ou inscrivez-vous</u></a> pour enregistrer des produits.')
@@ -120,18 +118,40 @@ def save_favorites(request):
 
 def my_favorites(request):
     """
-    Function to display
+    Function to display and manage
     the user's favorites.
     """
-    header = ['master', 'masthead']
-    title = ['Mes favoris', 'Pas encore de favoris ?']
     if request.user.is_authenticated:
-        favorites = Food.objects.filter(favorite__user=request.user)
-        if len(favorites) > 0:
-            context = {'favorites': favorites, 'class': header[0], 'title': title[0]}
+        meals = Favorite.objects.filter(user=request.user)
+        if len(meals) > 0:
+            # Count the number of items per meal
+            meal_list = ['petit_dejeuner', 'dejeuner', 'gouter', 'aperitif', 'diner']
+            counts = dict()
+            for meal in meal_list:
+                tot = Food.objects.filter(favorite__user=request.user).filter(favorite__meal=meal).count()
+                counts.update({meal:tot})
+            tout_repas = 'tout_repas'
+            counts.update({tout_repas:len(meals)})
+            products = Food.objects.filter(favorite__user=request.user)
             temp = 'explore/favorites.html'
+            m = request.GET.get('m')
+            title = ['Mes favoris', 'Ma sélection ' + str(m)]
+            context = {'favorites': products,
+                       'meals': meals,
+                       'counts': counts,
+                       'class': 'master',
+                       'title': title[0]}
+            # Filter items by meal
+            f = request.GET.get('f')
+            if f == 'go':
+                if m == 'tout_repas':
+                    selection = products
+                else:
+                    selection = Food.objects.filter(favorite__user=request.user).filter(favorite__meal=m)
+                context.update({'favorites': selection, 'title': title[1]})
         else:
-            context = {'class': header[1], 'title': title[1]}
+            # Return index with custom title
+            context = {'class': 'masthead', 'title': 'Pas encore de favoris ?'}
             temp = 'explore/index.html'
         return render(request, temp, context)
     else:
@@ -156,10 +176,8 @@ def my_profile(request):
     user profile.
     """
     if request.user.is_authenticated:
-        header = 'master'
         user = request.user
-        title = user.first_name
-        return render(request, 'explore/profile.html', {'class': header, 'title': title})
+        return render(request, 'explore/profile.html', {'class': 'master', 'title': user.first_name})
     else:
         return HttpResponseRedirect(reverse('index'))
 
@@ -169,10 +187,7 @@ def signin(request):
     Function to register
     new user.
     """
-    header = 'master'
-    title = 'Votre espace'
     form = UserForm(request.POST)
-    context = {'form': form, 'class': header, 'title': title}
     if request.method == 'POST':
         if form.is_valid():
             form.save()
@@ -186,16 +201,14 @@ def signin(request):
         else:
             msg = 'Informations erronées ou non conformes aux règles de sécurité. Veuillez recommencer.'
             messages.info(request, msg)
-    return render(request, 'explore/signin.html', context)
-  
+    return render(request, 'explore/signin.html', {'form': form, 'class': 'master', 'title': 'Votre espace'})
+
 
 def user_login(request):
     """
     Function to allow
     the user to log in.
     """
-    header = 'master'
-    title = 'Votre espace'
     if request.method == 'POST':
         username = request.POST.get('username')
         password = request.POST.get('password')
@@ -208,7 +221,7 @@ def user_login(request):
         else:
             msg = 'Identifiants incorrects.'
             messages.info(request, msg)
-    return render(request, 'explore/signin.html', {'class': header, 'title': title})
+    return render(request, 'explore/signin.html', {'class': 'master', 'title': 'Votre espace'})
 
 
 def user_logout(request):
@@ -226,6 +239,4 @@ def legal(request):
     Function to display
     the legal notice.
     """
-    header = 'master'
-    title = 'Mentions légales'
-    return render(request, 'explore/legal.html', {'class': header, 'title': title})
+    return render(request, 'explore/legal.html', {'class': 'master', 'title': 'Mentions légales'})
