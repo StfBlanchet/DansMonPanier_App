@@ -177,4 +177,3 @@ class FoodBuilder:
         csv_name = self.uris_cat.replace("'", "-") + '_dataset.csv'
         self.csv_path = os.path.join(my_path, "../data/", csv_name)
         self.res.to_csv(self.csv_path, index=False, sep=';', header=True, columns=vars)
-        

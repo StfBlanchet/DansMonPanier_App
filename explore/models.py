@@ -74,6 +74,7 @@ class Favorite(models.Model):
     """
     products = models.ForeignKey(Food, on_delete=models.CASCADE)
     user = models.ForeignKey(User, on_delete=models.CASCADE)
+    meal = models.CharField(max_length=15, null=True)
 
     def ref_list(self, request):
         """

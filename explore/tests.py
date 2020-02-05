@@ -69,26 +69,26 @@ class AppDataTestCase(TestCase):
         """
         Category.objects.create(
             id=0,
-            category='pains'
+            category='Pains'
         )
 
         Category.objects.create(
             id=1,
-            category='beurres'
+            category='Beurres'
         )
 
         Category.objects.create(
             id=2,
-            category='choux'
+            category='Choux'
         )
 
         Food.objects.create(
             id=0,
-            category_group='pains, biscottes, céréales',
+            category_group='Pains,Biscottes, Céréales',
             created=datetime.now(),
             code='0000000000000',
-            name='Bread test',
-            brands='Fake bread brand',
+            name='Bread Test',
+            brands='Fake Bread Brand',
             stores='Carrefour',
             bio=True,
             eco_packaging=True,
@@ -122,11 +122,11 @@ class AppDataTestCase(TestCase):
 
         Food.objects.create(
             id=1,
-            category_group='beurres, matières grasses',
+            category_group='Beurres, Matières grasses',
             created=datetime.now(),
             code='0000000000000',
-            name='Butter test',
-            brands='Fake butter brand',
+            name='Butter Test',
+            brands='Fake Butter Brand',
             stores='Leclerc',
             bio=True,
             eco_packaging=True,
@@ -192,12 +192,12 @@ class AppDataTestCase(TestCase):
         }
 
     def test_food_str(self):
-        food = Food(name="Fake name", stores="Fake stores", category_group="test")
-        self.assertIs(food.__str__(), "test")
+        food = Food(name="Fake Name", stores="Fake stores", category_group="Test")
+        self.assertIs(food.__str__(), "Test")
 
     def test_cat_str(self):
-        category = Category(category="test")
-        self.assertIs(category.__str__(), "test")
+        category = Category(category="Test")
+        self.assertIs(category.__str__(), "Test")
 
     def test_item_count(self):
         """
@@ -209,13 +209,13 @@ class AppDataTestCase(TestCase):
         """
         Verify that a new item was created
         """
-        self.assertTrue(Food.objects.filter(name='Bread test').exists())
+        self.assertTrue(Food.objects.filter(name='Bread Test').exists())
 
     def test_item_nova(self):
         """
         Verify the value of a specific feature
         """
-        product = Food.objects.get(name='Butter test')
+        product = Food.objects.get(name='Butter Test')
         self.assertIs(product.nova, 2)
 
     def test_item(self):
@@ -228,8 +228,8 @@ class AppDataTestCase(TestCase):
         request.user = self.user
         response = item(request, 1)
         self.assertEqual(response.status_code, 200)
-        self.assertContains(response, "Butter test")
-        self.assertContains(response, "Fake butter brand")
+        self.assertContains(response, "Butter Test")
+        self.assertContains(response, "Fake Butter Brand")
         self.assertContains(response, "Leclerc")
         user_favorites = Favorite().ref_list(request)
         self.assertEqual(len(user_favorites), 1)
@@ -342,7 +342,7 @@ class AppDataTestCase(TestCase):
 
     def test_results_nova(self):
         request = self.factory.get('/results/?q=beurre&ranking=nova&filtering=none')
-        data = Food.objects.filter(category_group__unaccent__icontains='beurre')
+        data = Food.objects.filter(category_group__unaccent__contains='Beurre')
         request.user = self.user
         response = results(request)
         self.assertEqual(response.status_code, 200)
@@ -350,7 +350,7 @@ class AppDataTestCase(TestCase):
 
     def test_results_nova_bio(self):
         request = self.factory.get('/results/?q=beurre&ranking=nova&filtering=bio')
-        data = Food.objects.filter(category_group__unaccent__icontains='beurre')
+        data = Food.objects.filter(category_group__unaccent__contains='Beurre')
         request.user = self.user
         response = results(request)
         self.assertEqual(response.status_code, 200)
@@ -358,7 +358,7 @@ class AppDataTestCase(TestCase):
 
     def test_results_nova_fair(self):
         request = self.factory.get('/results/?q=pain&ranking=nova&filtering=fair-trade')
-        data = Food.objects.filter(category_group__unaccent__icontains='pain')
+        data = Food.objects.filter(category_group__unaccent__contains='Pain')
         request.user = self.user
         response = results(request)
         self.assertEqual(response.status_code, 200)
@@ -366,7 +366,7 @@ class AppDataTestCase(TestCase):
 
     def test_results_nutrition_france(self):
         request = self.factory.get('/results/?q=pain&ranking=nutrition&filtering=made-in-france')
-        data = Food.objects.filter(category_group__unaccent__icontains='pain')
+        data = Food.objects.filter(category_group__unaccent__icontains='Pain')
         request.user = self.user
         response = results(request)
         self.assertEqual(response.status_code, 200)
@@ -374,7 +374,7 @@ class AppDataTestCase(TestCase):
 
     def test_results_nutrition_palm(self):
         request = self.factory.get('/results/?q=pain&ranking=nutrition&filtering=palm-oil-free')
-        data = Food.objects.filter(category_group__unaccent__icontains='pain')
+        data = Food.objects.filter(category_group__unaccent__icontains='Pain')
         request.user = self.user
         response = results(request)
         self.assertEqual(response.status_code, 200)
@@ -382,7 +382,7 @@ class AppDataTestCase(TestCase):
 
     def test_results_nutrition_fsc(self):
         request = self.factory.get('/results/?q=pain&ranking=nutrition&filtering=fsc')
-        data = Food.objects.filter(category_group__unaccent__icontains='pain')
+        data = Food.objects.filter(category_group__unaccent__icontains='Pain')
         request.user = self.user
         response = results(request)
         self.assertEqual(response.status_code, 200)
@@ -391,11 +391,11 @@ class AppDataTestCase(TestCase):
     def test_results_not_in_cat_1(self):
         request = self.factory.get('/results/?q=chou&ranking=nutrition&filtering=none')
         request.user = self.user
-        data = Food.objects.filter(category_group__unaccent__icontains='chou')
+        data = Food.objects.filter(category_group__unaccent__icontains='Chou')
         self.assertIs(len(data), 0)
 
     def test_results_not_in_cat_2(self):
         request = self.factory.get('/results/?q=gateau+au+chocolat&ranking=nutrition&filtering=none')
         request.user = self.user
-        data = Food.objects.filter(category_group__unaccent__icontains='gateau au chocolat')
+        data = Food.objects.filter(category_group__unaccent__icontains='Gateau au chocolat')
         self.assertIs(len(data), 0)

@@ -6,7 +6,22 @@
 
 
   <!-- Favorites Section -->
-  <section class="page-section my-4">
+  <section class="page-section mb-4 pt-0">
+    <div class="container-fluid justify-content-center text-white green pb-3 mb-3">
+      <form action="{% url 'my_favorites' %}" method="get">
+        {% csrf_token %}
+      <div class="text-center py-3 mb-0">
+      <label class="d-inline text-uppercase text-x-small"><input class="ml-2 mr-2" type="radio" name="m" value="tout_repas">tout repas ({{ counts.tout_repas }})</label>
+      <label class="d-inline text-uppercase text-x-small"><input class="ml-2 mr-2" type="radio" name="m" value="petit_dejeuner">petit-déjeuner ({{ counts.petit_dejeuner }})</label>
+      <label class="d-inline text-uppercase text-x-small"><input class="ml-2 mr-2" type="radio" name="m" value="dejeuner">déjeuner ({{ counts.dejeuner }})</label>
+      <label class="d-inline text-uppercase text-x-small"><input class="ml-2 mr-2" type="radio" name="m" value="gouter">goûter ({{ counts.gouter }})</label>
+      <label class="d-inline text-uppercase text-x-small"><input class="ml-2 mr-2" type="radio" name="m" value="aperitif">apéritif ({{ counts.aperitif }})</label>
+      <label class="d-inline text-uppercase text-x-small"><input class="ml-2 mr-2" type="radio" name="m" value="diner">dîner ({{ counts.diner }})</label>
+      </div>
+        <button name="f" class="d-block m-auto w-25 btn btn-primary text-uppercase text-white text-x-small purple py-2 ml-3" type="submit" value="go">
+        filtrer</button>
+      </form>
+    </div>
     <div class="container justify-content-center">
       <ul class="list-unstyled row">
        {% for food in favorites %}
@@ -27,7 +42,7 @@
               {% endif %}
               <br>
               <ul class="list-group list-group-flush">
-                <li style="border:none" class="py-0 list-group-item">
+                <li class="border-0 py-0 list-group-item">
                 {% if food.nutrition_grade %}
                   {% if food.nutrition_grade == 'a' %}
                   <img class="img-score" src="{% static 'explore/off_icons/nutriscore-a.svg' %}" alt="Score nutritionnel {{ food.nutrition_grade }}">
@@ -89,6 +104,13 @@
                 {% if food.fair_trade == 'True' %}
                 <li class="list-group-item">Commerce équitable</li>
                 {% endif %}
+                {% for meal in meals %}
+                {% if meal.products_id == food.id %}
+                <li class="list-group-item bg-light text-small text-center font-italic">
+                  classé dans <button class="btn green text-white text-uppercase text-x-small ml-2">{{ meal.meal }}</button>
+                </li>
+                {% endif %}
+                {% endfor %}
                 <li class="list-group-item p-0 m-0 text-center">
                   <br>
                    <form action="{% url 'remove_favorites' %}" method="post">

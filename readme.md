@@ -102,10 +102,10 @@ pip install -r requirements.txt
         <tfoot>
             <tr class="total">
                 <td class="name left"><b>Total</b></td>
-                <td>417</td>
-                <td>22</td>
+                <td>424</td>
+                <td>26</td>
                 <td>0</td>
-                <td class="right" data-ratio="395 417"><b>95%</b></td>
+                <td class="right" data-ratio="398 424"><b>94%</b></td>
             </tr>
         </tfoot>
         <tbody>
@@ -145,6 +145,13 @@ pip install -r requirements.txt
                 <td class="right" data-ratio="5 5">100%</td>
             </tr>
             <tr class="file">
+                <td class="name left"><a href="#">explore/migrations/0003_favorite_meal.py</a></td>
+                <td>4</td>
+                <td>0</td>
+                <td>0</td>
+                <td class="right" data-ratio="4 4">100%</td>
+            </tr>
+            <tr class="file">
                 <td class="name left"><a href="#">explore/migrations/__init__.py</a></td>
                 <td>0</td>
                 <td>0</td>
@@ -153,17 +160,17 @@ pip install -r requirements.txt
             </tr>
             <tr class="file">
                 <td class="name left"><a href="#">explore/models.py</a></td>
-                <td>54</td>
+                <td>55</td>
                 <td>0</td>
                 <td>0</td>
-                <td class="right" data-ratio="54 54">100%</td>
+                <td class="right" data-ratio="55 55">100%</td>
             </tr>
             <tr class="file">
                 <td class="name left"><a href="#">explore/process.py</a></td>
-                <td>12</td>
+                <td>13</td>
                 <td>2</td>
                 <td>0</td>
-                <td class="right" data-ratio="10 12">83%</td>
+                <td class="right" data-ratio="11 13">85%</td>
             </tr>
             <tr class="file">
                 <td class="name left"><a href="#">explore/tests.py</a></td>
@@ -181,16 +188,16 @@ pip install -r requirements.txt
             </tr>
             <tr class="file">
                 <td class="name left"><a href="#">explore/views.py</a></td>
-                <td>137</td>
-                <td>20</td>
+                <td>138</td>
+                <td>24</td>
                 <td>0</td>
-                <td class="right" data-ratio="117 137">85%</td>
+                <td class="right" data-ratio="114 138">83%</td>
             </tr>
         </tbody>
     </table>
 <p>
     <a class="nav" href="https://coverage.readthedocs.io">coverage.py v5.0.3</a>,
-    created at 2020-02-03 12:16
+    created at 2020-02-05 10:16
 </p>
 
 
