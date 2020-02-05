@@ -137,4 +137,3 @@ cat_list_test = ["jus d'orange pur jus",
                  "céréales au chocolat",
                  "mueslis aux fruits",
                  "pains grillés"]
-

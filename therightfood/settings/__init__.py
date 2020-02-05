@@ -1,3 +1,4 @@
+
 """
 Django settings
 for therightfood project
@@ -6,17 +7,13 @@ for therightfood project
 import os
 
 
-# Build paths inside the project like this: os.path.join(BASE_DIR, ...)
 BASE_DIR = os.path.dirname(os.path.dirname(os.path.abspath(__file__)))
 
 SECRET_KEY = '!wa*gya13(a2#tip%cd8v_vb^_(a51f$+mpby4o&9g3y11n_6('
 
-# SECURITY WARNING: don't run with debug turned on in production!
 DEBUG = True
 
 ALLOWED_HOSTS = []
-
-# Application definition
 
 INSTALLED_APPS = [
     'explore.apps.ExploreConfig',
@@ -26,7 +23,7 @@ INSTALLED_APPS = [
     'django.contrib.sessions',
     'django.contrib.messages',
     'django.contrib.staticfiles',
-    'django.contrib.postgres'
+    'django.contrib.postgres',
 ]
 
 MIDDLEWARE = [
@@ -37,7 +34,7 @@ MIDDLEWARE = [
     'django.contrib.auth.middleware.AuthenticationMiddleware',
     'django.contrib.messages.middleware.MessageMiddleware',
     'django.middleware.clickjacking.XFrameOptionsMiddleware',
-    'django.middleware.locale.LocaleMiddleware'
+    'django.middleware.locale.LocaleMiddleware',
 ]
 
 ROOT_URLCONF = 'therightfood.urls'
@@ -60,7 +57,6 @@ TEMPLATES = [
 
 WSGI_APPLICATION = 'therightfood.wsgi.application'
 
-
 # Database
 
 DATABASES = {
@@ -73,8 +69,6 @@ DATABASES = {
         'PORT': '5432',
     }
 }
-
-# Password validation
 
 AUTH_PASSWORD_VALIDATORS = [
     {
@@ -90,7 +84,6 @@ AUTH_PASSWORD_VALIDATORS = [
         'NAME': 'django.contrib.auth.password_validation.NumericPasswordValidator',
     },
 ]
-
 
 # Internationalization
 LANGUAGE_CODE = 'fr'
