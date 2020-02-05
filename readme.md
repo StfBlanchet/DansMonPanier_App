@@ -152,7 +152,7 @@ pip install -r requirements.txt
                 <td class="right" data-ratio="4 4">100%</td>
             </tr>
             <tr class="file">
-                <td class="name left"><a href="#">explore/migrations/__init__.py.py</a></td>
+                <td class="name left"><a href="#">explore/migrations/__init__.py</a></td>
                 <td>0</td>
                 <td>0</td>
                 <td>0</td>
@@ -170,7 +170,7 @@ pip install -r requirements.txt
                 <td>13</td>
                 <td>2</td>
                 <td>0</td>
-                <td class="right" data-ratio="11 13">83%</td>
+                <td class="right" data-ratio="11 13">85%</td>
             </tr>
             <tr class="file">
                 <td class="name left"><a href="#">explore/tests.py</a></td>
