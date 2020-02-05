@@ -102,10 +102,10 @@ pip install -r requirements.txt
         <tfoot>
             <tr class="total">
                 <td class="name left"><b>Total</b></td>
-                <td>417</td>
-                <td>22</td>
+                <td>424</td>
+                <td>26</td>
                 <td>0</td>
-                <td class="right" data-ratio="395 417"><b>95%</b></td>
+                <td class="right" data-ratio="398 424"><b>94%</b></td>
             </tr>
         </tfoot>
         <tbody>
